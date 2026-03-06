@@ -24,12 +24,13 @@ Este projeto usa a pasta `.agents/` como fonte oficial de instruções.
 
 ## Linguagem do projeto
 
-> LINGUAGEM_PROJETO: JavaScript
+> LINGUAGEM_PROJETO: TypeScript
 
 Mapeamento:
 
 - Java -> `/.agents/rules/java.md`
 - JavaScript -> `/.agents/rules/javascript.md`
+- TypeScript -> `/.agents/rules/typescript.md`
 - Python -> `/.agents/rules/python.md`
 
 ## Diretriz de versionamento

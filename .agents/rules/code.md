@@ -24,4 +24,4 @@
 
 5. **Organização e Documentação:**
    - Não manter código comentado/morto no arquivo. Apague o que não for mais usado.
-   - Documentação específica por linguagem (tipagem, docstrings, comandos) deve seguir as regras definidas em `/.agents/rules/javascript.md`.
+   - Documentação específica por linguagem (tipagem, docstrings, comandos) deve seguir as regras definidas em `/.agents/rules/typescript.md`.

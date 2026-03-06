@@ -44,7 +44,8 @@
 | Layout `Padrao` | Grade fixa e pouca adaptacao para campos vazios ou textos longos | Espaco mal aproveitado e menor legibilidade |
 | Exportacao PDF | Fluxo depende de render oculto com espera fixa | Ponto provavel de travamento com lotes maiores |
 | Exportacao PPTX | Saida simplificada e pouco fiel ao preview | Diferenca entre o que o usuario ve e o que exporta |
-| Stack declarada x real | Regras do agente estao em `JavaScript`, mas o projeto atual esta em `TypeScript` | Divergencia de documentacao e convencoes |
+| ~~Stack declarada x real~~ | ~~Regras do agente estavam em `JavaScript`, mas o projeto real estava em `TypeScript`~~ | ~~Divergencia de documentacao e convencoes~~ |
+| Stack declarada x real | [x] Documentacao oficial alinhada para `TypeScript` em `AGENTS.md` e `/.agents/rules/typescript.md` | Divergencia resolvida e mantida no historico do roadmap |
 | Escopo tecnico | Existem dependencias fora do escopo client-side, como `express` e `better-sqlite3` | Complexidade desnecessaria e ruido arquitetural |
 
 ---
@@ -70,8 +71,10 @@ Alinhar o repositorio com a identidade oficial do produto e remover ruido herdad
 
 - [ ] Corrigir o nome do produto para `Slidefly` em codigo, interface, metadados e documentacao.
 - [ ] Revisar `package.json`, `metadata.json`, landing page, textos visiveis e arquivos auxiliares expostos ao usuario.
-- [ ] Confirmar se o projeto seguira em `TypeScript` ou se havera migracao real para `JavaScript`.
-- [ ] Alinhar `AGENTS.md`, regras de linguagem e documentacao tecnica com a stack efetivamente adotada.
+- [x] ~~Confirmar se o projeto seguira em `TypeScript` ou se havera migracao real para `JavaScript`.~~
+- [x] Confirmar `TypeScript` como stack oficial do projeto.
+- [x] ~~Alinhar `AGENTS.md`, regras de linguagem e documentacao tecnica com a stack efetivamente adotada.~~
+- [x] Alinhar `AGENTS.md`, `code.md` e `/.agents/rules/typescript.md` com a stack efetivamente adotada.
 - [ ] Mapear dependencias fora do escopo client-side e classificar o que deve ser removido.
 
 **Criterios de saida**
@@ -202,7 +205,7 @@ Fechar o ciclo de reconstrucao com menos ruido tecnico e mais previsibilidade pa
 
 | Risco | Impacto | Direcao de tratamento |
 |---|---|---|
-| Divergencia entre `JavaScript` e `TypeScript` | Regras e implementacao podem seguir em sentidos diferentes | Decidir stack oficial e alinhar a documentacao |
+| ~~Divergencia entre `JavaScript` e `TypeScript`~~ | ~~Regras e implementacao podiam seguir em sentidos diferentes~~ | ~~Decidir stack oficial e alinhar a documentacao~~ |
 | Exportacao do layout `Personalizado` para PPTX | Alta chance de baixa fidelidade visual | Criar adaptador proprio ou documentar limites aceitaveis |
 | Renderizacao PDF baseada em espera fixa | Travamento ou arquivo incompleto em lotes maiores | Trocar por fluxo deterministico de render/export |
 | Dependencias fora do escopo do PRD | Complexidade desnecessaria e manutencao mais cara | Revisar necessidade real e remover o excedente |
@@ -211,7 +214,8 @@ Fechar o ciclo de reconstrucao com menos ruido tecnico e mais previsibilidade pa
 
 ## 7. Decisoes em Aberto
 
-- [ ] Confirmar a stack oficial do projeto: manter `TypeScript` ou migrar de fato para `JavaScript`.
+- [x] ~~Confirmar a stack oficial do projeto: manter `TypeScript` ou migrar de fato para `JavaScript`.~~
+- [x] `TypeScript` confirmado como stack oficial do projeto.
 - [ ] Definir o nivel de fidelidade exigido do `PPTX` para o layout `Personalizado`.
 - [ ] Validar se a regra `titulo 22 / texto 20` sera tratada apenas como limite de fonte ou se tambem exigira truncamento de conteudo.
 
