@@ -2,7 +2,7 @@
 # Docker Compose - JavaScript/TypeScript com Vite (Otimizado com Multi-stage Cache)
 # =============================================================================
 # Uso: docker compose up
-# App: http://localhost:5173
+# App: http://localhost:3000
 # =============================================================================
 
 services:
@@ -12,7 +12,7 @@ services:
       dockerfile: .docker/Dockerfile.node
       target: dev
     ports:
-      - "5173:5173"
+      - "3000:3000"
     volumes:
       - ../:/app
       - /app/node_modules

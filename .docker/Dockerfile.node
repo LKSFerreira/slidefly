@@ -12,11 +12,11 @@ WORKDIR /app
 RUN npm install -g npm@latest --silent
 
 # Copia os arquivos de lock e manifesto PRIMEIRO
-# COPY package*.json ./
+COPY package*.json ./
 
 # Instala as dependências aqui no build! O Docker vai fazer cache dessa camada.
 # Usamos apenas o install puro; sem poluir o log.
-# RUN npm install --silent
+RUN npm install --silent
 
 # ==========================================
 # ESTÁGIO 2: DESENVOLVIMENTO (DevContainer)
@@ -27,7 +27,7 @@ EXPOSE 5173
 
 # Como a instalação já foi feita no Estágio 1, o container liga instantaneamente!
 # O código real será injetado via Bind Mount do compose.yaml
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+CMD ["npm", "run", "dev"]
 
 # ==========================================
 # ESTÁGIO 3: PRODUÇÃO (Deploy)
