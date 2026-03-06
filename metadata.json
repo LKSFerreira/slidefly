@@ -1,0 +1,5 @@
+{
+  "name": "AutoReport Web",
+  "description": "Transforme CSVs de demandas em apresentações interativas e profissionais direto no navegador.",
+  "requestFramePermissions": []
+}
