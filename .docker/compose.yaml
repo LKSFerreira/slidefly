@@ -1,30 +1,26 @@
 # =============================================================================
-# Docker Compose - Java com Spring Boot (Otimizado com Multi-stage Cache)
+# Docker Compose - JavaScript/TypeScript com Vite (Otimizado com Multi-stage Cache)
 # =============================================================================
 # Uso: docker compose up
-# App: http://localhost:8080
+# App: http://localhost:5173
 # =============================================================================
 
 services:
   app:
     build:
       context: ../
-      dockerfile: .devcontainer/Dockerfile.java
+      dockerfile: .docker/Dockerfile.node
       target: dev
     ports:
-      - "8080:8080"
+      - "5173:5173"
     volumes:
       - ../:/app
-      - maven-cache:/root/.m2
+      - /app/node_modules
     working_dir: /app
     stdin_open: true
     tty: true
     env_file:
-      - ../.env.development
+      - ../.env
     environment:
-      - JAVA_ENV=development
-      - SPRING_PROFILES_ACTIVE=dev
-      - JAVA_TOOL_OPTIONS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
-
-volumes:
-  maven-cache:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
