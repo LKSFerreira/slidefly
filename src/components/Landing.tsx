@@ -55,7 +55,7 @@ export default function Landing({ onDataLoaded }: LandingProps) {
       <div className="max-w-3xl w-full text-center space-y-8">
         <div className="space-y-4">
           <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-white">
-            AutoReport Web
+            Slidefly
           </h1>
           <p className="text-xl text-slate-400">
             CSV → Apresentação em segundos

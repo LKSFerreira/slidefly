@@ -36,7 +36,8 @@
 
 | Area | Estado atual | Impacto |
 |---|---|---|
-| Identidade do produto | Ainda existem referencias antigas como `react-example` e `AutoReport Web` | Marca inconsistente no codigo e na interface |
+| ~~Identidade do produto~~ | ~~Ainda existem referencias antigas como `react-example` e `AutoReport Web`~~ | ~~Marca inconsistente no codigo e na interface~~ |
+| Identidade do produto | [x] Nome oficial `Slidefly` alinhado em codigo, metadados e documentacao visivel | Ajuste concluido e mantido no historico do roadmap |
 | Roadmap | Arquivo atual estava vazio | Falta de rastreabilidade e prioridade clara |
 | Dados | Nao existe fluxo de correcao leve sem recarregar todo o CSV | Ajustes pequenos ficam caros e lentos |
 | Tratamento antes do gerador | Parsing atual faz apenas mapeamento basico | Risco de lixo visual, textos ruins e dados mal formatados |
@@ -69,8 +70,10 @@ Alinhar o repositorio com a identidade oficial do produto e remover ruido herdad
 
 **Entregas**
 
-- [ ] Corrigir o nome do produto para `Slidefly` em codigo, interface, metadados e documentacao.
-- [ ] Revisar `package.json`, `metadata.json`, landing page, textos visiveis e arquivos auxiliares expostos ao usuario.
+- [x] ~~Corrigir o nome do produto para `Slidefly` em codigo, interface, metadados e documentacao.~~
+- [x] Corrigir o nome do produto para `Slidefly` em codigo, interface, metadados e documentacao visivel.
+- [x] ~~Revisar `package.json`, `metadata.json`, landing page, textos visiveis e arquivos auxiliares expostos ao usuario.~~
+- [x] Revisar `package.json`, `metadata.json`, `Landing.tsx` e `README.md` para alinhar os textos visiveis ao usuario.
 - [x] ~~Confirmar se o projeto seguira em `TypeScript` ou se havera migracao real para `JavaScript`.~~
 - [x] Confirmar `TypeScript` como stack oficial do projeto.
 - [x] ~~Alinhar `AGENTS.md`, regras de linguagem e documentacao tecnica com a stack efetivamente adotada.~~
