@@ -6,3 +6,18 @@
 
 # Markdown docs must stay normalized and UTF-8 in working tree
 *.md text eol=lf working-tree-encoding=UTF-8
+
+# Source and config files in this project must stay on LF across platforms
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Repository meta files should also stay normalized
+.editorconfig text eol=lf
+.gitattributes text eol=lf

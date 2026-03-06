@@ -47,7 +47,8 @@
 | Exportacao PPTX | Saida simplificada e pouco fiel ao preview | Diferenca entre o que o usuario ve e o que exporta |
 | ~~Stack declarada x real~~ | ~~Regras do agente estavam em `JavaScript`, mas o projeto real estava em `TypeScript`~~ | ~~Divergencia de documentacao e convencoes~~ |
 | Stack declarada x real | [x] Documentacao oficial alinhada para `TypeScript` em `AGENTS.md` e `/.agents/rules/typescript.md` | Divergencia resolvida e mantida no historico do roadmap |
-| Escopo tecnico | Existem dependencias fora do escopo client-side, como `express` e `better-sqlite3` | Complexidade desnecessaria e ruido arquitetural |
+| ~~Escopo tecnico~~ | ~~Existem dependencias fora do escopo client-side, como `express` e `better-sqlite3`~~ | ~~Complexidade desnecessaria e ruido arquitetural~~ |
+| Escopo tecnico | [x] Auditoria realizada e dependencias fora do escopo inicial classificadas para remocao | Limpeza tecnica iniciada com historico preservado |
 
 ---
 
@@ -78,7 +79,8 @@ Alinhar o repositorio com a identidade oficial do produto e remover ruido herdad
 - [x] Confirmar `TypeScript` como stack oficial do projeto.
 - [x] ~~Alinhar `AGENTS.md`, regras de linguagem e documentacao tecnica com a stack efetivamente adotada.~~
 - [x] Alinhar `AGENTS.md`, `code.md` e `/.agents/rules/typescript.md` com a stack efetivamente adotada.
-- [ ] Mapear dependencias fora do escopo client-side e classificar o que deve ser removido.
+- [x] ~~Mapear dependencias fora do escopo client-side e classificar o que deve ser removido.~~
+- [x] Mapear dependencias fora do escopo client-side e classificar a remocao de `express`, `@types/express`, `better-sqlite3`, `dotenv` e `@google/genai`.
 
 **Criterios de saida**
 
@@ -174,7 +176,10 @@ Fechar o ciclo de reconstrucao com menos ruido tecnico e mais previsibilidade pa
 
 **Entregas**
 
-- [ ] Remover dependencias e artefatos fora do escopo definido do produto.
+- [x] ~~Remover dependencias e artefatos fora do escopo definido do produto.~~
+- [x] Remover o primeiro lote seguro de dependencias fora do escopo: `express`, `@types/express`, `better-sqlite3`, `dotenv` e `@google/genai`.
+- [x] Mover `@vitejs/plugin-react` para `devDependencies`.
+- [ ] Remover dependencias e artefatos fora do escopo definido do produto em lotes seguros adicionais e validar o impacto no build.
 - [ ] Revisar build, lint e consistencia geral do projeto.
 - [ ] Validar cenarios reais com CSVs representativos.
 - [ ] Atualizar documentacao minima de uso e manutencao.
@@ -211,7 +216,8 @@ Fechar o ciclo de reconstrucao com menos ruido tecnico e mais previsibilidade pa
 | ~~Divergencia entre `JavaScript` e `TypeScript`~~ | ~~Regras e implementacao podiam seguir em sentidos diferentes~~ | ~~Decidir stack oficial e alinhar a documentacao~~ |
 | Exportacao do layout `Personalizado` para PPTX | Alta chance de baixa fidelidade visual | Criar adaptador proprio ou documentar limites aceitaveis |
 | Renderizacao PDF baseada em espera fixa | Travamento ou arquivo incompleto em lotes maiores | Trocar por fluxo deterministico de render/export |
-| Dependencias fora do escopo do PRD | Complexidade desnecessaria e manutencao mais cara | Revisar necessidade real e remover o excedente |
+| ~~Dependencias fora do escopo do PRD~~ | ~~Complexidade desnecessaria e manutencao mais cara~~ | ~~Revisar necessidade real e remover o excedente~~ |
+| Dependencias fora do escopo do PRD | [x] Auditoria concluida e primeira limpeza aprovada | Prosseguir com remocoes seguras e validacao tecnica |
 
 ---
 
