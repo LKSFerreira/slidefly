@@ -140,6 +140,10 @@ export default function Padrao({
   const larguraAcoes = calcularPesoHorizontal(record.actions, 1, 1.35);
   const larguraProximas = calcularPesoHorizontal(record.nextActivities, 1, 1.35);
 
+  const pesoTotalMeta = cardsMeta.reduce((acc, c) => acc + c.peso, 0);
+  const larguraTotalDupla = larguraAcoes + larguraProximas;
+  const totalVerticalPeso = pesoDescricao + pesoLinhaPareada + pesoProblemas;
+
   useLayoutEffect(() => {
     setEscalaFonte(1);
   }, [assinaturaConteudo]);
@@ -193,88 +197,114 @@ export default function Padrao({
         </h1>
       </div>
 
-      <div
-        className="grid min-h-0 gap-2.5"
-        style={{
-          gridTemplateRows: `auto minmax(0, ${pesoDescricao.toFixed(2)}fr) minmax(0, ${pesoLinhaPareada.toFixed(
-            2,
-          )}fr) minmax(0, ${pesoProblemas.toFixed(2)}fr)`,
-        }}
-      >
-        <div className="grid min-h-0 gap-2.5" style={{ gridTemplateColumns: templateColunasMeta }}>
-          {cardsMeta.map((card) => (
-            <BlocoPadrao
+      <div className="flex min-h-0 flex-1 flex-col w-full">
+        <div className="flex w-full shrink-0 flex-row pb-2.5 min-h-0">
+          {cardsMeta.map((card, idx) => (
+            <div
               key={card.chave}
-              titulo={card.titulo}
-              valor={card.valor}
+              className="h-full min-w-0"
+              style={{
+                width: `${(card.peso / pesoTotalMeta) * 100}%`,
+                paddingRight: idx < cardsMeta.length - 1 ? '10px' : '0',
+              }}
+            >
+              <BlocoPadrao
+                titulo={card.titulo}
+                valor={card.valor}
+                headerBg={palette.accent}
+                borderColor={corBorda}
+                backgroundColor={corBloco}
+                textColor={palette.text}
+                tituloTamanho={tamanhoTituloBloco}
+                corpoTamanho={tamanhoCorpo}
+                alturaCabecalho={alturaCabecalhoMeta}
+                corpoRef={registrarCorpo(card.chave)}
+                corpoCentralizado
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="flex min-h-0 flex-1 flex-col w-full">
+          <div
+            className="w-full pb-2.5 min-h-0"
+            style={{ height: `${(pesoDescricao / totalVerticalPeso) * 100}%` }}
+          >
+            <BlocoPadrao
+              titulo="DESCRIÇÃO DO PEDIDO"
+              valor={record.description}
               headerBg={palette.accent}
               borderColor={corBorda}
               backgroundColor={corBloco}
               textColor={palette.text}
-            tituloTamanho={tamanhoTituloBloco}
-            corpoTamanho={tamanhoCorpo}
-            alturaCabecalho={alturaCabecalhoMeta}
-            corpoRef={registrarCorpo(card.chave)}
-            corpoCentralizado
-          />
-        ))}
-      </div>
+              tituloTamanho={tamanhoTituloBloco}
+              corpoTamanho={tamanhoCorpo}
+              alturaCabecalho={alturaCabecalhoConteudo}
+              corpoRef={registrarCorpo('descricao')}
+            />
+          </div>
 
-        <BlocoPadrao
-          titulo="DESCRIÇÃO DO PEDIDO"
-          valor={record.description}
-          headerBg={palette.accent}
-          borderColor={corBorda}
-          backgroundColor={corBloco}
-          textColor={palette.text}
-          tituloTamanho={tamanhoTituloBloco}
-          corpoTamanho={tamanhoCorpo}
-          alturaCabecalho={alturaCabecalhoConteudo}
-          corpoRef={registrarCorpo('descricao')}
-        />
+          <div
+            className="flex w-full flex-row pb-2.5 min-h-0"
+            style={{ height: `${(pesoLinhaPareada / totalVerticalPeso) * 100}%` }}
+          >
+            <div
+              className="h-full min-w-0"
+              style={{
+                width: `${(larguraAcoes / larguraTotalDupla) * 100}%`,
+                paddingRight: '10px',
+              }}
+            >
+              <BlocoPadrao
+                titulo="AÇÕES REALIZADAS"
+                valor={record.actions}
+                headerBg={palette.accent}
+                borderColor={corBorda}
+                backgroundColor={corBloco}
+                textColor={palette.text}
+                tituloTamanho={tamanhoTituloBloco}
+                corpoTamanho={tamanhoCorpo}
+                alturaCabecalho={alturaCabecalhoConteudo}
+                corpoRef={registrarCorpo('acoes')}
+              />
+            </div>
+            <div
+              className="h-full min-w-0"
+              style={{ width: `${(larguraProximas / larguraTotalDupla) * 100}%` }}
+            >
+              <BlocoPadrao
+                titulo="PRÓXIMAS ATIVIDADES"
+                valor={record.nextActivities}
+                headerBg={palette.accent}
+                borderColor={corBorda}
+                backgroundColor={corBloco}
+                textColor={palette.text}
+                tituloTamanho={tamanhoTituloBloco}
+                corpoTamanho={tamanhoCorpo}
+                alturaCabecalho={alturaCabecalhoConteudo}
+                corpoRef={registrarCorpo('proximas')}
+              />
+            </div>
+          </div>
 
-        <div
-          className="grid min-h-0 gap-2.5"
-          style={{ gridTemplateColumns: `${larguraAcoes.toFixed(2)}fr ${larguraProximas.toFixed(2)}fr` }}
-        >
-          <BlocoPadrao
-            titulo="AÇÕES REALIZADAS"
-            valor={record.actions}
-            headerBg={palette.accent}
-            borderColor={corBorda}
-            backgroundColor={corBloco}
-            textColor={palette.text}
-            tituloTamanho={tamanhoTituloBloco}
-            corpoTamanho={tamanhoCorpo}
-            alturaCabecalho={alturaCabecalhoConteudo}
-            corpoRef={registrarCorpo('acoes')}
-          />
-          <BlocoPadrao
-            titulo="PRÓXIMAS ATIVIDADES"
-            valor={record.nextActivities}
-            headerBg={palette.accent}
-            borderColor={corBorda}
-            backgroundColor={corBloco}
-            textColor={palette.text}
-            tituloTamanho={tamanhoTituloBloco}
-            corpoTamanho={tamanhoCorpo}
-            alturaCabecalho={alturaCabecalhoConteudo}
-            corpoRef={registrarCorpo('proximas')}
-          />
+          <div
+            className="w-full min-h-0"
+            style={{ height: `${(pesoProblemas / totalVerticalPeso) * 100}%` }}
+          >
+            <BlocoPadrao
+              titulo="PROBLEMAS E PENDÊNCIAS"
+              valor={record.problems}
+              headerBg={palette.accent}
+              borderColor={corBorda}
+              backgroundColor={corBloco}
+              textColor={palette.text}
+              tituloTamanho={tamanhoTituloBloco}
+              corpoTamanho={tamanhoCorpo}
+              alturaCabecalho={alturaCabecalhoConteudo}
+              corpoRef={registrarCorpo('problemas')}
+            />
+          </div>
         </div>
-
-        <BlocoPadrao
-          titulo="PROBLEMAS E PENDÊNCIAS"
-          valor={record.problems}
-          headerBg={palette.accent}
-          borderColor={corBorda}
-          backgroundColor={corBloco}
-          textColor={palette.text}
-          tituloTamanho={tamanhoTituloBloco}
-          corpoTamanho={tamanhoCorpo}
-          alturaCabecalho={alturaCabecalhoConteudo}
-          corpoRef={registrarCorpo('problemas')}
-        />
       </div>
     </div>
   );
@@ -298,7 +328,7 @@ function BlocoPadrao({
     : 'min-h-0 flex-1 whitespace-pre-wrap px-4 pt-2.5 pb-3 font-semibold';
 
   return (
-    <section className="flex h-full min-h-0 flex-col overflow-hidden border" style={{ borderColor }}>
+    <section className="flex h-full w-full min-h-0 flex-col overflow-hidden border" style={{ borderColor }}>
       <header
         className="flex items-center justify-center px-4 text-center font-semibold uppercase tracking-[0.08em] text-white"
         style={{
