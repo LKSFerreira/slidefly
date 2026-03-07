@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { DemandRecord, TemplateType, PaletteType, PaletteColors, LayoutItem } from '../types';
 import Slide from './Slide';
+import SlideCanvas from './SlideCanvas';
+import DownloadOptionsPanel from './DownloadOptionsPanel';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { GripVertical, ChevronLeft, ChevronRight, Play, Settings2, ImagePlus, Move } from 'lucide-react';
+import { GripVertical, ChevronLeft, ChevronRight, Play, Settings2, ImagePlus, Move, Download } from 'lucide-react';
+import { exportToPdf } from '../utils/exportPdf';
+import { exportToPptx } from '../utils/exportPptx';
 
 interface ConfiguratorProps {
   data: DemandRecord[];
@@ -22,7 +26,7 @@ interface ConfiguratorProps {
 }
 
 export const PALETTES: Record<PaletteType, PaletteColors> = {
-  clara: { bg: '#FFFFFF', surface: '#FFFFFF', text: '#111827', accent: '#005a32', success: '#10B981', title: '#005a32' },
+  clara: { bg: '#E1DDD6', surface: '#EFE9E1', text: '#111111', accent: '#046B3F', success: '#10B981', title: '#046B3F' },
   escura: { bg: '#111827', surface: '#1F2937', text: '#F9FAFB', accent: '#059669', success: '#10B981', title: '#F9FAFB' },
   verde: { bg: '#022C22', surface: '#064E3B', text: '#ECFDF5', accent: '#047857', success: '#10B981', title: '#6EE7B7' },
 };
@@ -46,7 +50,8 @@ export default function Configurator({
   const [previewIndex, setPreviewIndex] = useState(0);
   const [movingIndex, setMovingIndex] = useState<number | null>(null);
   const [moveTarget, setMoveTarget] = useState<string>('');
-
+  const [downloadModalOpen, setDownloadModalOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const currentPalette = PALETTES[palette];
 
   const previewRecord = data[previewIndex] || data[0] || {
@@ -70,7 +75,7 @@ export default function Configurator({
     items.splice(result.destination.index, 0, reorderedItem);
 
     setData(items);
-    
+
     // Update preview index if the dragged item was the one being previewed
     if (previewIndex === result.source.index) {
       setPreviewIndex(result.destination.index);
@@ -108,7 +113,7 @@ export default function Configurator({
 
   const handleMoveSlide = () => {
     if (movingIndex === null) return;
-    
+
     const targetIndex = parseInt(moveTarget, 10) - 1; // Convert to 0-based index
     if (isNaN(targetIndex) || targetIndex < 0 || targetIndex >= data.length) {
       alert(`Por favor, digite um número válido entre 1 e ${data.length}`);
@@ -120,7 +125,7 @@ export default function Configurator({
     items.splice(targetIndex, 0, reorderedItem);
 
     setData(items);
-    
+
     // Update preview index
     if (previewIndex === movingIndex) {
       setPreviewIndex(targetIndex);
@@ -140,6 +145,32 @@ export default function Configurator({
     setMoveTarget('');
   };
 
+  const handleExportPdf = async () => {
+    setIsExporting(true);
+    try {
+      await exportToPdf(data, template, currentPalette, layout, titleFontSize, contentFontSize);
+      setDownloadModalOpen(false);
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+      alert('Erro ao exportar PDF.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleExportPptx = async () => {
+    setIsExporting(true);
+    try {
+      await exportToPptx(data, template, currentPalette, layout, titleFontSize, contentFontSize);
+      setDownloadModalOpen(false);
+    } catch (error) {
+      console.error('Error exporting PPTX:', error);
+      alert('Erro ao exportar PPTX.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="flex h-screen overflow-hidden bg-slate-900 text-slate-200">
       {/* Sidebar */}
@@ -154,8 +185,8 @@ export default function Configurator({
                   key={t}
                   onClick={() => setTemplate(t)}
                   className={`p-3 rounded-xl border text-xs font-medium transition-all flex flex-col items-start gap-2 ${
-                    template === t 
-                      ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400 shadow-lg shadow-cyan-500/10' 
+                    template === t
+                      ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400 shadow-lg shadow-cyan-500/10'
                       : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-slate-600'
                   }`}
                 >
@@ -200,7 +231,7 @@ export default function Configurator({
                     <div className="flex items-center gap-2 bg-slate-800 rounded-lg p-1">
                       <button onClick={() => setTitleFontSize(prev => Math.max(8, prev - 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">-</button>
                       <span className="text-xs w-4 text-center">{titleFontSize}</span>
-                      <button onClick={() => setTitleFontSize(prev => Math.min(32, prev + 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">+</button>
+                      <button onClick={() => setTitleFontSize(prev => Math.min(30, prev + 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">+</button>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
@@ -208,7 +239,7 @@ export default function Configurator({
                     <div className="flex items-center gap-2 bg-slate-800 rounded-lg p-1">
                       <button onClick={() => setContentFontSize(prev => Math.max(8, prev - 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">-</button>
                       <span className="text-xs w-4 text-center">{contentFontSize}</span>
-                      <button onClick={() => setContentFontSize(prev => Math.min(32, prev + 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">+</button>
+                      <button onClick={() => setContentFontSize(prev => Math.min(30, prev + 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">+</button>
                     </div>
                   </div>
                 </div>
@@ -231,11 +262,14 @@ export default function Configurator({
             <div className="space-y-2 flex-1 flex flex-col min-h-0">
               <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">Ordem dos Slides</h3>
               <p className="text-xs text-slate-500 mb-1">Arraste para reordenar. Clique para visualizar.</p>
+              <p className="text-xs font-medium text-slate-500">
+                {data.length} slide{data.length !== 1 ? 's' : ''} gerado{data.length !== 1 ? 's' : ''}
+              </p>
               <DragDropContext onDragEnd={handleDragEnd}>
                 <Droppable droppableId="slides-list">
                   {(provided) => (
-                    <div 
-                      {...provided.droppableProps} 
+                    <div
+                      {...provided.droppableProps}
                       ref={provided.innerRef}
                       className="space-y-2 flex-1 overflow-y-auto custom-scrollbar pr-2 pb-2"
                     >
@@ -247,20 +281,20 @@ export default function Configurator({
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               className={`flex items-center p-2 rounded-lg border transition-colors ${
-                                snapshot.isDragging 
-                                  ? 'bg-slate-800 border-cyan-500/50 shadow-lg' 
+                                snapshot.isDragging
+                                  ? 'bg-slate-800 border-cyan-500/50 shadow-lg'
                                   : previewIndex === index
                                     ? 'bg-slate-800/80 border-slate-600'
                                     : 'bg-slate-800/30 border-slate-700/50 hover:bg-slate-800/50'
                               }`}
                             >
-                              <div 
+                              <div
                                 {...provided.dragHandleProps}
                                 className="p-1 text-slate-500 hover:text-slate-300 cursor-grab active:cursor-grabbing"
                               >
                                 <GripVertical className="w-4 h-4" />
                               </div>
-                              <div 
+                              <div
                                 className="ml-2 overflow-hidden cursor-pointer flex-1"
                                 onClick={() => setPreviewIndex(index)}
                               >
@@ -295,38 +329,31 @@ export default function Configurator({
         <div className="pt-4 border-t border-slate-800 mt-4">
           <button
             onClick={onStart}
-            className="w-full py-3 btn-rainbow text-white rounded-xl font-semibold transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-400/50 hover:-translate-y-0.5"
+            className="w-full py-2.5 btn-rainbow text-white rounded-xl font-semibold transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-400/50 hover:-translate-y-0.5"
           >
             Gerar Apresentação
           </button>
-          <p className="text-xs text-center text-slate-500 mt-3">
-            {data.length} slide{data.length !== 1 ? 's' : ''} gerado{data.length !== 1 ? 's' : ''}
-          </p>
+          <button
+            onClick={() => setDownloadModalOpen(true)}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800/80 py-2.5 font-semibold text-slate-200 transition-colors hover:border-slate-600 hover:bg-slate-800"
+          >
+            <Download className="h-4 w-4" />
+            <span>Download</span>
+          </button>
         </div>
       </div>
 
       {/* Main Preview Area */}
-      <div className="flex-1 bg-slate-950 p-8 flex flex-col items-center justify-center overflow-hidden">
+      <div className="flex-1 bg-slate-950 p-6 flex flex-col items-center overflow-hidden">
         {template === 'personalizado' && (
           <div className="mb-4 text-xs text-slate-500 bg-slate-900/50 px-4 py-2 rounded-full border border-slate-800 flex items-center gap-2">
             <Settings2 className="w-3 h-3 text-cyan-400" />
             <span>Modo de Edição Ativo: Arraste e redimensione os blocos abaixo para personalizar seu layout.</span>
           </div>
         )}
-        <div className="w-full max-w-5xl aspect-video shadow-2xl rounded-lg overflow-hidden ring-1 ring-white/10 relative">
-          <Slide 
-            record={previewRecord} 
-            template={template} 
-            palette={currentPalette} 
-            isExporting={false}
-            layout={layout}
-            onLayoutChange={setLayout}
-            isEditable={template === 'personalizado'}
-            titleFontSize={titleFontSize}
-            contentFontSize={contentFontSize}
-          />
-          <div className="absolute top-4 right-4 flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium text-white/80 border border-white/10 group z-[100]">
-            <button 
+        <div className="mb-4 flex w-full items-center justify-end gap-3">
+          <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium text-white/80 border border-white/10">
+            <button
               onClick={() => setPreviewIndex(Math.max(0, previewIndex - 1))}
               disabled={previewIndex === 0}
               className="hover:text-white disabled:opacity-50 transition-colors p-1"
@@ -334,7 +361,7 @@ export default function Configurator({
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <button 
+            <button
               onClick={() => onPreviewSingle(previewIndex)}
               className="flex items-center gap-2 hover:text-cyan-400 transition-colors px-1 border-x border-white/10"
               title="Ver em Tela Cheia"
@@ -342,7 +369,7 @@ export default function Configurator({
               <Play className="w-3 h-3 fill-current" />
               <span>Preview: Slide {previewIndex + 1} de {Math.max(1, data.length)}</span>
             </button>
-            <button 
+            <button
               onClick={() => setPreviewIndex(Math.min(data.length - 1, previewIndex + 1))}
               disabled={previewIndex === data.length - 1 || data.length === 0}
               className="hover:text-white disabled:opacity-50 transition-colors p-1"
@@ -351,6 +378,24 @@ export default function Configurator({
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
+        </div>
+        <div className="w-full max-w-6xl flex-1 min-h-0">
+          <SlideCanvas canvasClassName="overflow-hidden rounded-[24px] shadow-2xl ring-1 ring-white/10">
+            {({ scale }) => (
+              <Slide
+                record={previewRecord}
+                template={template}
+                palette={currentPalette}
+                isExporting={false}
+                layout={layout}
+                onLayoutChange={setLayout}
+                isEditable={template === 'personalizado'}
+                titleFontSize={titleFontSize}
+                contentFontSize={contentFontSize}
+                canvasScale={scale}
+              />
+            )}
+          </SlideCanvas>
         </div>
       </div>
       {/* Move Slide Modal */}
@@ -388,6 +433,25 @@ export default function Configurator({
                 Confirmar
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {downloadModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="relative w-full max-w-3xl overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/90 shadow-2xl shadow-cyan-900/20 ring-1 ring-white/5">
+            <button
+              onClick={() => !isExporting && setDownloadModalOpen(false)}
+              className="absolute right-5 top-5 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+              title="Fechar"
+            >
+              ✕
+            </button>
+            <DownloadOptionsPanel
+              palette={currentPalette}
+              isExporting={isExporting}
+              onExportPdf={handleExportPdf}
+              onExportPptx={handleExportPptx}
+            />
           </div>
         </div>
       )}

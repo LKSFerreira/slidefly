@@ -1,45 +1,132 @@
-import html2pdf from 'html2pdf.js';
 import { DemandRecord, TemplateType, PaletteColors, LayoutItem } from '../types';
 import { createRoot } from 'react-dom/client';
 import React from 'react';
+import { flushSync } from 'react-dom';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import Slide from '../components/Slide';
+import { SLIDE_CANVAS_HEIGHT, SLIDE_CANVAS_WIDTH } from '../config/slideCanvas';
+import { gerarNomeArquivoExportacao } from './exportFileName';
+
+const PDF_SLIDE_WIDTH_IN = 13.333;
+const PDF_SLIDE_HEIGHT_IN = 7.5;
+
+function aguardarFrame() {
+  return new Promise<void>((resolve) => {
+    window.requestAnimationFrame(() => resolve());
+  });
+}
+
+async function aguardarFontes() {
+  const documentComFontes = document as Document & {
+    fonts?: {
+      ready: Promise<unknown>;
+    };
+  };
+
+  if (documentComFontes.fonts?.ready) {
+    await documentComFontes.fonts.ready;
+  }
+}
+
+async function aguardarLayoutEstavel(slide: HTMLDivElement) {
+  let ultimaAltura = 0;
+  let ultimaLargura = 0;
+  let framesEstaveis = 0;
+
+  while (framesEstaveis < 4) {
+    await aguardarFrame();
+    const alturaAtual = slide.scrollHeight;
+    const larguraAtual = slide.scrollWidth;
+
+    if (alturaAtual === ultimaAltura && larguraAtual === ultimaLargura) {
+      framesEstaveis += 1;
+    } else {
+      framesEstaveis = 0;
+      ultimaAltura = alturaAtual;
+      ultimaLargura = larguraAtual;
+    }
+  }
+}
 
 export const exportToPdf = async (data: DemandRecord[], template: TemplateType, palette: PaletteColors, layout: LayoutItem[], titleFontSize: number = 12, contentFontSize: number = 14) => {
   // Create a hidden container
   const container = document.createElement('div');
-  container.style.position = 'absolute';
-  container.style.left = '-9999px';
+  container.style.position = 'fixed';
+  container.style.left = '0';
   container.style.top = '0';
-  container.style.width = '1920px'; // 16:9 aspect ratio
+  container.style.width = `${SLIDE_CANVAS_WIDTH}px`;
+  container.style.height = `${SLIDE_CANVAS_HEIGHT}px`;
+  container.style.overflow = 'hidden';
+  container.style.pointerEvents = 'none';
+  container.style.zIndex = '-1';
   document.body.appendChild(container);
 
   const root = createRoot(container);
 
   // Render all slides
-  root.render(
-    <div id="pdf-container">
-      {data.map((record, index) => (
-        <div key={index} className="pdf-slide" style={{ width: '1920px', height: '1080px', pageBreakAfter: 'always' }}>
-          <Slide record={record} template={template} palette={palette} isExporting={true} layout={layout} titleFontSize={titleFontSize} contentFontSize={contentFontSize} />
-        </div>
-      ))}
-    </div>
-  );
+  flushSync(() => {
+    root.render(
+      <div id="pdf-container">
+        {data.map((record, index) => (
+          <div
+            key={index}
+            className="pdf-slide"
+            style={{
+              width: `${SLIDE_CANVAS_WIDTH}px`,
+              height: `${SLIDE_CANVAS_HEIGHT}px`,
+              pageBreakAfter: 'always',
+            }}
+          >
+            <Slide
+              record={record}
+              template={template}
+              palette={palette}
+              isExporting={true}
+              layout={layout}
+              titleFontSize={titleFontSize}
+              contentFontSize={contentFontSize}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  });
 
-  // Wait for render
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await aguardarFontes();
+  await aguardarFrame();
 
-  const element = document.getElementById('pdf-container');
-  
-  const opt = {
-    margin:       0,
-    filename:     'AutoReport.pdf',
-    image:        { type: 'jpeg' as const, quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true, logging: false },
-    jsPDF:        { unit: 'px', format: [1920, 1080] as [number, number], orientation: 'landscape' as const }
-  };
+  const slides = Array.from(container.querySelectorAll('.pdf-slide')) as HTMLDivElement[];
+  const pdf = new jsPDF({
+    unit: 'in',
+    format: [PDF_SLIDE_WIDTH_IN, PDF_SLIDE_HEIGHT_IN],
+    orientation: 'landscape',
+  });
 
-  await html2pdf().set(opt).from(element).save();
+  for (const [index, slide] of slides.entries()) {
+    await aguardarLayoutEstavel(slide);
+
+    const canvas = await html2canvas(slide, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: palette.bg,
+      width: SLIDE_CANVAS_WIDTH,
+      height: SLIDE_CANVAS_HEIGHT,
+      windowWidth: SLIDE_CANVAS_WIDTH,
+      windowHeight: SLIDE_CANVAS_HEIGHT,
+    });
+
+    const imagem = canvas.toDataURL('image/jpeg', 0.98);
+
+    if (index > 0) {
+      pdf.addPage([PDF_SLIDE_WIDTH_IN, PDF_SLIDE_HEIGHT_IN], 'landscape');
+    }
+
+    pdf.addImage(imagem, 'JPEG', 0, 0, PDF_SLIDE_WIDTH_IN, PDF_SLIDE_HEIGHT_IN);
+  }
+
+  pdf.save(gerarNomeArquivoExportacao('pdf'));
 
   // Cleanup
   root.unmount();

@@ -1,4 +1,5 @@
 import Papa from 'papaparse';
+import { normalizarDemandas } from './normalizarDemandas';
 import { DemandRecord } from '../types';
 
 export const parseCSV = (file: File): Promise<DemandRecord[]> => {
@@ -43,7 +44,7 @@ export const parseCSV = (file: File): Promise<DemandRecord[]> => {
           };
         });
 
-        resolve(mappedData);
+        resolve(normalizarDemandas(mappedData));
       },
       error: (error) => {
         reject(new Error(`Erro ao ler o CSV: ${error.message}`));

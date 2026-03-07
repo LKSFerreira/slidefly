@@ -43,6 +43,7 @@
 | Tratamento antes do gerador | Parsing atual faz apenas mapeamento basico | Risco de lixo visual, textos ruins e dados mal formatados |
 | Layout `Personalizado` | Move blocos, mas ainda nao cobre bem renomeacao, adaptacao automatica e regras de densidade | Experiencia incompleta frente ao PRD |
 | Layout `Padrao` | Grade fixa e pouca adaptacao para campos vazios ou textos longos | Espaco mal aproveitado e menor legibilidade |
+| Preview x apresentacao | Preview do configurador e apresentacao usavam escalas diferentes | Ajuste visual no configurador nao refletia o slide final |
 | Exportacao PDF | Fluxo depende de render oculto com espera fixa | Ponto provavel de travamento com lotes maiores |
 | Exportacao PPTX | Saida simplificada e pouco fiel ao preview | Diferenca entre o que o usuario ve e o que exporta |
 | ~~Stack declarada x real~~ | ~~Regras do agente estavam em `JavaScript`, mas o projeto real estava em `TypeScript`~~ | ~~Divergencia de documentacao e convencoes~~ |
@@ -95,10 +96,12 @@ Permitir que o usuario trate os dados com agilidade antes de gerar a apresentaca
 
 **Entregas**
 
-- [ ] Criar uma camada de normalizacao de dados antes do gerador de apresentacao.
+- [x] ~~Criar uma camada de normalizacao de dados antes do gerador de apresentacao.~~
+- [x] Criar uma camada central de normalizacao de registros antes do preview, apresentacao e exportacoes.
 - [ ] Permitir pequenos ajustes pontuais por slide e por campo sem recarregar todo o CSV.
 - [ ] Permitir correcoes gramaticais e ajustes manuais de conteudo dentro da aplicacao.
-- [ ] Padronizar limpeza de espacos extras, quebras desnecessarias e valores vazios.
+- [x] ~~Padronizar limpeza de espacos extras, quebras desnecessarias e valores vazios.~~
+- [x] Padronizar limpeza de espacos e quebras, remover prefixo numerico da fase e aplicar fallbacks configuraveis para prioridade e campos curtos.
 - [ ] Fortalecer o mapeamento de colunas com aliases e nomes equivalentes.
 - [ ] Garantir que campos vazios nao gerem blocos vazios no layout nem na exportacao.
 
@@ -118,9 +121,11 @@ Tornar os layouts mais inteligentes, legiveis e adaptativos ao conteudo real de 
 - [ ] Permitir mover blocos e colunas no layout `Personalizado`.
 - [ ] Permitir renomear colunas ou rotulos visuais no layout `Personalizado`.
 - [ ] Centralizar o conteudo e alinhar os blocos no meio quando a composicao pedir esse comportamento.
-- [ ] Aplicar limite maximo de configuracao para fonte: titulo `22` e texto `20`.
+- [x] ~~Aplicar limite maximo de configuracao para fonte: titulo `22` e texto `20`.~~
+- [x] Aplicar limite maximo de configuracao para fonte: titulo `22` e texto `22`.
 - [ ] Ocultar automaticamente blocos sem conteudo util.
-- [ ] Redistribuir largura e altura para aproveitar melhor areas com mais texto.
+- [x] ~~Redistribuir largura e altura para aproveitar melhor areas com mais texto.~~
+- [x] Redistribuir largura e altura do layout `Padrao` conforme a densidade de texto, usando auto-reducao de fonte apenas como ultimo recurso.
 - [ ] Fazer colunas com pouco ou nenhum conteudo ocuparem menos espaco ou nenhum espaco.
 - [ ] Garantir que o layout configurado seja reaplicado aos demais slides com previsibilidade.
 
@@ -161,6 +166,8 @@ Melhorar legibilidade, uso do espaco e conforto operacional no configurador e na
 - [ ] Ajustar sidebar, preview e lista de slides para cenarios com muitos dados.
 - [ ] Melhorar a navegacao entre slides e a preservacao de contexto apos reordenacao.
 - [ ] Revisar estados vazios, mensagens inline e feedback visual do fluxo.
+- [x] Unificar o canvas 16:9 do preview e da apresentacao para manter escala proporcional entre modos.
+- [x] Adicionar zoom de visualizacao discreto no preview do configurador sem alterar a fonte nem o layout real do slide.
 - [ ] Refinar a experiencia de preview unico versus apresentacao completa.
 
 **Criterios de saida**
@@ -226,7 +233,8 @@ Fechar o ciclo de reconstrucao com menos ruido tecnico e mais previsibilidade pa
 - [x] ~~Confirmar a stack oficial do projeto: manter `TypeScript` ou migrar de fato para `JavaScript`.~~
 - [x] `TypeScript` confirmado como stack oficial do projeto.
 - [ ] Definir o nivel de fidelidade exigido do `PPTX` para o layout `Personalizado`.
-- [ ] Validar se a regra `titulo 22 / texto 20` sera tratada apenas como limite de fonte ou se tambem exigira truncamento de conteudo.
+- [x] ~~Validar se a regra `titulo 22 / texto 20` sera tratada apenas como limite de fonte ou se tambem exigira truncamento de conteudo.~~
+- [x] Regra fechada para o layout atual: titulo `22`, texto `22` e auto-reducao de fonte apenas quando a redistribuicao de espaco nao resolver.
 
 ---
 

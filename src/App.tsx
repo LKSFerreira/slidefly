@@ -17,8 +17,8 @@ export default function App() {
   const [data, setData] = useState<DemandRecord[]>([]);
   const [template, setTemplate] = useState<TemplateType>('padrao');
   const [palette, setPalette] = useState<PaletteType>('clara');
-  const [titleFontSize, setTitleFontSize] = useState<number>(12);
-  const [contentFontSize, setContentFontSize] = useState<number>(14);
+  const [titleFontSize, setTitleFontSize] = useState<number>(24);
+  const [contentFontSize, setContentFontSize] = useState<number>(22);
   const [currentStep, setCurrentStep] = useState<'landing' | 'config' | 'presentation'>('landing');
   const [previewSingleIndex, setPreviewSingleIndex] = useState<number | null>(null);
   const [layout, setLayout] = useState<LayoutItem[]>(DEFAULT_LAYOUT);

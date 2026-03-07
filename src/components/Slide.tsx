@@ -13,6 +13,7 @@ interface SlideProps {
   isEditable?: boolean;
   titleFontSize?: number;
   contentFontSize?: number;
+  canvasScale?: number;
 }
 
 export default function Slide({ 
@@ -24,7 +25,8 @@ export default function Slide({
   onLayoutChange,
   isEditable = false,
   titleFontSize = 12,
-  contentFontSize = 14
+  contentFontSize = 14,
+  canvasScale = 1,
 }: SlideProps) {
   const style = {
     backgroundColor: palette.bg,
@@ -32,11 +34,12 @@ export default function Slide({
     '--accent': palette.accent,
     '--surface': palette.surface,
     '--success': palette.success,
+    padding: '56px 64px',
   } as React.CSSProperties;
 
   return (
     <div 
-      className="w-full h-full flex flex-col p-8 md:p-12 overflow-hidden"
+      className="w-full h-full flex flex-col overflow-hidden"
       style={style}
     >
       {record.type === 'image' && record.imageUrl ? (
@@ -45,7 +48,14 @@ export default function Slide({
         </div>
       ) : (
         <>
-          {template === 'padrao' && <Padrao record={record} palette={palette} titleFontSize={titleFontSize} contentFontSize={contentFontSize} />}
+          {template === 'padrao' && (
+            <Padrao
+              record={record}
+              palette={palette}
+              titleFontSize={titleFontSize}
+              contentFontSize={contentFontSize}
+            />
+          )}
           {template === 'personalizado' && (
             <Personalizado 
               record={record} 
@@ -55,6 +65,7 @@ export default function Slide({
               isEditable={isEditable}
               titleFontSize={titleFontSize}
               contentFontSize={contentFontSize}
+              canvasScale={canvasScale}
             />
           )}
         </>

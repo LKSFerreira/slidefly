@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Maximize, Minimize, ChevronLeft, ChevronRight, Download, ArrowLeft } from 'lucide-react';
-import { DemandRecord, TemplateType, PaletteType, LayoutItem } from '../types';
-import { PALETTES } from './Configurator';
-import Slide from './Slide';
+import React, { useEffect, useRef, useState } from 'react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Maximize, Minimize } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { DemandRecord, LayoutItem, PaletteType, TemplateType } from '../types';
 import { exportToPdf } from '../utils/exportPdf';
 import { exportToPptx } from '../utils/exportPptx';
+import { PALETTES } from './Configurator';
+import DownloadOptionsPanel from './DownloadOptionsPanel';
+import PresentationFinalSlide from './PresentationFinalSlide';
+import Slide from './Slide';
+import SlideCanvas from './SlideCanvas';
 
 interface PresentationProps {
   data: DemandRecord[];
@@ -18,39 +21,39 @@ interface PresentationProps {
   layout: LayoutItem[];
 }
 
-export default function Presentation({ 
-  data, 
-  template, 
-  palette, 
+export default function Presentation({
+  data,
+  template,
+  palette,
   titleFontSize,
   contentFontSize,
-  onBack, 
+  onBack,
   isSinglePreview = false,
-  layout
+  layout,
 }: PresentationProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [zoomApresentacao, setZoomApresentacao] = useState(100);
   const [isExporting, setIsExporting] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const currentPalette = PALETTES[palette];
+  const totalSlides = isSinglePreview ? data.length : data.length + 1;
 
-  const totalSlides = isSinglePreview ? data.length : data.length + 1; // +1 for the export slide if not single preview
-
-  const handleNext = () => {
+  function handleNext() {
     if (currentIndex < totalSlides - 1) {
-      setCurrentIndex(prev => prev + 1);
+      setCurrentIndex((prev) => prev + 1);
     }
-  };
+  }
 
-  const handlePrev = () => {
+  function handlePrev() {
     if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1);
+      setCurrentIndex((prev) => prev - 1);
     }
-  };
+  }
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'ArrowRight' || e.key === ' ') {
         handleNext();
       } else if (e.key === 'ArrowLeft') {
@@ -62,32 +65,32 @@ export default function Presentation({
           onBack();
         }
       }
-    };
+    }
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, totalSlides]);
+  }, [currentIndex, totalSlides, onBack]);
 
   useEffect(() => {
-    const handleFullscreenChange = () => {
+    function handleFullscreenChange() {
       setIsFullscreen(!!document.fullscreenElement);
-    };
+    }
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const toggleFullscreen = () => {
+  function toggleFullscreen() {
     if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen().catch(err => {
+      containerRef.current?.requestFullscreen().catch((err) => {
         console.error(`Error attempting to enable full-screen mode: ${err.message}`);
       });
     } else {
       document.exitFullscreen();
     }
-  };
+  }
 
-  const handleExportPdf = async () => {
+  async function handleExportPdf() {
     setIsExporting(true);
     try {
       await exportToPdf(data, template, currentPalette, layout, titleFontSize, contentFontSize);
@@ -97,9 +100,9 @@ export default function Presentation({
     } finally {
       setIsExporting(false);
     }
-  };
+  }
 
-  const handleExportPptx = async () => {
+  async function handleExportPptx() {
     setIsExporting(true);
     try {
       await exportToPptx(data, template, currentPalette, layout, titleFontSize, contentFontSize);
@@ -109,101 +112,111 @@ export default function Presentation({
     } finally {
       setIsExporting(false);
     }
-  };
+  }
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      className="fixed inset-0 bg-black flex flex-col items-center justify-center overflow-hidden"
+      className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden bg-black"
       style={{ backgroundColor: currentPalette.bg }}
     >
-      {/* Top Controls (visible on hover or not fullscreen) */}
-      <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-50 opacity-0 hover:opacity-100 transition-opacity duration-300">
-        <button 
+      <div className="absolute left-0 right-0 top-0 z-50 flex items-center justify-between p-4 opacity-0 transition-opacity duration-300 hover:opacity-100">
+        <button
           onClick={onBack}
-          className="p-2 rounded-full bg-black/20 text-white hover:bg-black/40 backdrop-blur-sm transition-all"
+          className="rounded-full bg-black/20 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/40"
           title="Voltar"
         >
-          <ArrowLeft className="w-6 h-6" />
+          <ArrowLeft className="h-6 w-6" />
         </button>
-        <div className="text-white/50 text-sm font-medium tracking-widest">
+        <div className="text-sm font-medium tracking-widest text-white/50">
           {currentIndex + 1} / {totalSlides}
         </div>
-        <button 
-          onClick={toggleFullscreen}
-          className="p-2 rounded-full bg-black/20 text-white hover:bg-black/40 backdrop-blur-sm transition-all"
-          title="Tela Cheia"
-        >
-          {isFullscreen ? <Minimize className="w-6 h-6" /> : <Maximize className="w-6 h-6" />}
-        </button>
-      </div>
-
-      {/* Slide Content */}
-      <div className="w-full h-full max-w-[1920px] max-h-[1080px] aspect-video relative">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-            className="absolute inset-0"
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 rounded-full bg-black/20 px-3 py-1 text-white backdrop-blur-sm">
+            <span className="text-[10px] uppercase tracking-[0.16em] text-white/60">Zoom</span>
+            <button
+              onClick={() => setZoomApresentacao((prev) => Math.max(100, prev - 5))}
+              disabled={zoomApresentacao === 100}
+              className="p-1 transition-all hover:text-white disabled:opacity-30"
+              title="Reduzir zoom"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="min-w-12 text-center text-sm font-medium text-white/80">{zoomApresentacao}%</span>
+            <button
+              onClick={() => setZoomApresentacao((prev) => Math.min(160, prev + 5))}
+              disabled={zoomApresentacao === 160}
+              className="p-1 transition-all hover:text-white disabled:opacity-30"
+              title="Aumentar zoom"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+          <button
+            onClick={toggleFullscreen}
+            className="rounded-full bg-black/20 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/40"
+            title="Tela Cheia"
           >
-            {currentIndex < data.length ? (
-              <Slide 
-                record={data[currentIndex]} 
-                template={template} 
-                palette={currentPalette} 
-                layout={layout}
-                titleFontSize={titleFontSize}
-                contentFontSize={contentFontSize}
-              />
-            ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center text-center p-12" style={{ color: currentPalette.text }}>
-                <h2 className="text-5xl font-bold mb-4">Apresentação Concluída</h2>
-                <p className="text-xl opacity-70 mb-12">Exporte seu relatório nos formatos abaixo.</p>
-                
-                <div className="flex space-x-6">
-                  <button
-                    onClick={handleExportPdf}
-                    disabled={isExporting}
-                    className="flex items-center space-x-3 px-8 py-4 rounded-2xl font-semibold text-lg transition-all hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
-                    style={{ backgroundColor: currentPalette.accent, color: currentPalette.bg }}
-                  >
-                    <Download className="w-6 h-6" />
-                    <span>Salvar como PDF</span>
-                  </button>
-                  <button
-                    onClick={handleExportPptx}
-                    disabled={isExporting}
-                    className="flex items-center space-x-3 px-8 py-4 rounded-2xl font-semibold text-lg transition-all hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 border-2"
-                    style={{ borderColor: currentPalette.accent, color: currentPalette.accent }}
-                  >
-                    <Download className="w-6 h-6" />
-                    <span>Salvar como PPTX</span>
-                  </button>
-                </div>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
+            {isFullscreen ? <Minimize className="h-6 w-6" /> : <Maximize className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
 
-      {/* Navigation Controls (visible on hover) */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-4 z-50 opacity-0 hover:opacity-100 transition-opacity duration-300">
-        <button 
+      <div className="relative h-full w-full">
+        <SlideCanvas containerClassName="overflow-auto" canvasClassName="shadow-2xl">
+          {({ scale }) => (
+            <div
+              className="h-full w-full"
+              style={{ transform: `scale(${zoomApresentacao / 100})`, transformOrigin: 'center center' }}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentIndex}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="h-full w-full"
+                >
+                  {currentIndex < data.length ? (
+                    <Slide
+                      record={data[currentIndex]}
+                      template={template}
+                      palette={currentPalette}
+                      layout={layout}
+                      titleFontSize={titleFontSize}
+                      contentFontSize={contentFontSize}
+                      canvasScale={scale}
+                    />
+                  ) : (
+                    <PresentationFinalSlide
+                      palette={currentPalette}
+                      isExporting={isExporting}
+                      onExportPdf={handleExportPdf}
+                      onExportPptx={handleExportPptx}
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          )}
+        </SlideCanvas>
+      </div>
+
+      <div className="absolute bottom-8 left-1/2 z-50 flex -translate-x-1/2 space-x-4 opacity-0 transition-opacity duration-300 hover:opacity-100">
+        <button
           onClick={handlePrev}
           disabled={currentIndex === 0}
-          className="p-3 rounded-full bg-black/20 text-white hover:bg-black/40 backdrop-blur-sm transition-all disabled:opacity-30"
+          className="rounded-full bg-black/20 p-3 text-white backdrop-blur-sm transition-all disabled:opacity-30 hover:bg-black/40"
         >
-          <ChevronLeft className="w-8 h-8" />
+          <ChevronLeft className="h-8 w-8" />
         </button>
-        <button 
+        <button
           onClick={handleNext}
           disabled={currentIndex === totalSlides - 1}
-          className="p-3 rounded-full bg-black/20 text-white hover:bg-black/40 backdrop-blur-sm transition-all disabled:opacity-30"
+          className="rounded-full bg-black/20 p-3 text-white backdrop-blur-sm transition-all disabled:opacity-30 hover:bg-black/40"
         >
-          <ChevronRight className="w-8 h-8" />
+          <ChevronRight className="h-8 w-8" />
         </button>
       </div>
     </div>
