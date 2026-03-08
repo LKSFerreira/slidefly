@@ -4,7 +4,7 @@ import Slide from './Slide';
 import SlideCanvas from './SlideCanvas';
 import DownloadOptionsPanel from './DownloadOptionsPanel';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { GripVertical, ChevronLeft, ChevronRight, Play, Settings2, ImagePlus, Move, Download } from 'lucide-react';
+import { GripVertical, ChevronLeft, ChevronRight, Play, Settings2, ImagePlus, Move, Download, RotateCcw } from 'lucide-react';
 import { exportToPdf } from '../utils/exportPdf';
 import { exportToPptx } from '../utils/exportPptx';
 
@@ -23,6 +23,7 @@ interface ConfiguratorProps {
   onPreviewSingle: (index: number) => void;
   layout: LayoutItem[];
   setLayout: (l: LayoutItem[]) => void;
+  onResetApp: () => void;
 }
 
 export const PALETTES: Record<PaletteType, PaletteColors> = {
@@ -46,11 +47,13 @@ export default function Configurator({
   onPreviewSingle,
   layout,
   setLayout,
+  onResetApp,
 }: ConfiguratorProps) {
   const [previewIndex, setPreviewIndex] = useState(0);
   const [movingIndex, setMovingIndex] = useState<number | null>(null);
   const [moveTarget, setMoveTarget] = useState<string>('');
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
+  const [resetModalOpen, setResetModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const currentPalette = PALETTES[palette];
 
@@ -169,6 +172,19 @@ export default function Configurator({
     } finally {
       setIsExporting(false);
     }
+  };
+
+  const handleCancelReset = () => {
+    setResetModalOpen(false);
+  };
+
+  const handleConfirmReset = () => {
+    setResetModalOpen(false);
+    onResetApp();
+  };
+
+  const handleResetClick = () => {
+    setResetModalOpen(true);
   };
 
   return (
@@ -351,8 +367,16 @@ export default function Configurator({
             <span>Modo de Edição Ativo: Arraste e redimensione os blocos abaixo para personalizar seu layout.</span>
           </div>
         )}
-        <div className="mb-4 flex w-full items-center justify-end gap-3">
-          <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium text-white/80 border border-white/10">
+        <div className="mb-4 flex w-full items-center justify-between gap-3">
+          <button
+            onClick={handleResetClick}
+            className="flex h-9 items-center gap-2 rounded-full border border-white/10 bg-black/55 px-5 text-xs font-semibold text-white/85 shadow-lg shadow-black/20 backdrop-blur-md transition-all hover:border-white/20 hover:text-white"
+            title="Reiniciar aplicação"
+          >
+            <RotateCcw className="h-4 w-4" />
+            <span>Reiniciar</span>
+          </button>
+          <div className="flex h-9 items-center gap-2 bg-black/50 backdrop-blur-md px-3 rounded-full text-xs font-semibold text-white/80 border border-white/10">
             <button
               onClick={() => setPreviewIndex(Math.max(0, previewIndex - 1))}
               disabled={previewIndex === 0}
@@ -398,6 +422,48 @@ export default function Configurator({
           </SlideCanvas>
         </div>
       </div>
+      {resetModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md"
+          onClick={handleCancelReset}
+        >
+          <div
+            className="w-full max-w-md overflow-hidden rounded-[1.75rem] border border-white/10 bg-slate-900/95 shadow-2xl shadow-cyan-950/20 ring-1 ring-white/5"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="border-b border-white/10 px-6 py-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 ring-1 ring-cyan-500/20">
+                  <RotateCcw className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-white">Reiniciar aplicação</h3>
+                  <p className="text-sm text-slate-400">A apresentação atual será removida da memória.</p>
+                </div>
+              </div>
+            </div>
+            <div className="px-6 py-5">
+              <p className="text-sm leading-6 text-slate-300">
+                Use esta ação para começar uma nova importação sem recarregar a página.
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-3 border-t border-white/10 px-6 py-5">
+              <button
+                onClick={handleCancelReset}
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmReset}
+                className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-cyan-400"
+              >
+                Reiniciar agora
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Move Slide Modal */}
       {movingIndex !== null && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
