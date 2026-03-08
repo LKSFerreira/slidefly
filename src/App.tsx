@@ -4,24 +4,31 @@ import Configurator from './components/Configurator';
 import Presentation from './components/Presentation';
 import { DemandRecord, TemplateType, PaletteType, LayoutItem } from './types';
 
-const DEFAULT_LAYOUT: LayoutItem[] = [
-  { i: 'id', x: 0, y: 0, w: 2, h: 2 },
-  { i: 'title', x: 2, y: 0, w: 10, h: 2 },
-  { i: 'description', x: 0, y: 2, w: 8, h: 6 },
-  { i: 'boardColumn', x: 8, y: 2, w: 4, h: 2 },
-  { i: 'assignedTo', x: 8, y: 4, w: 4, h: 2 },
-  { i: 'priority', x: 8, y: 6, w: 4, h: 2 },
-];
+const DEFAULT_TEMPLATE: TemplateType = 'padrao';
+const DEFAULT_PALETTE: PaletteType = 'clara';
+const DEFAULT_TITLE_FONT_SIZE = 24;
+const DEFAULT_CONTENT_FONT_SIZE = 22;
+
+function criarLayoutPadrao(): LayoutItem[] {
+  return [
+    { i: 'id', x: 0, y: 0, w: 2, h: 2 },
+    { i: 'title', x: 2, y: 0, w: 10, h: 2 },
+    { i: 'description', x: 0, y: 2, w: 8, h: 6 },
+    { i: 'boardColumn', x: 8, y: 2, w: 4, h: 2 },
+    { i: 'assignedTo', x: 8, y: 4, w: 4, h: 2 },
+    { i: 'priority', x: 8, y: 6, w: 4, h: 2 },
+  ];
+}
 
 export default function App() {
   const [data, setData] = useState<DemandRecord[]>([]);
-  const [template, setTemplate] = useState<TemplateType>('padrao');
-  const [palette, setPalette] = useState<PaletteType>('clara');
-  const [titleFontSize, setTitleFontSize] = useState<number>(24);
-  const [contentFontSize, setContentFontSize] = useState<number>(22);
+  const [template, setTemplate] = useState<TemplateType>(DEFAULT_TEMPLATE);
+  const [palette, setPalette] = useState<PaletteType>(DEFAULT_PALETTE);
+  const [titleFontSize, setTitleFontSize] = useState<number>(DEFAULT_TITLE_FONT_SIZE);
+  const [contentFontSize, setContentFontSize] = useState<number>(DEFAULT_CONTENT_FONT_SIZE);
   const [currentStep, setCurrentStep] = useState<'landing' | 'config' | 'presentation'>('landing');
   const [previewSingleIndex, setPreviewSingleIndex] = useState<number | null>(null);
-  const [layout, setLayout] = useState<LayoutItem[]>(DEFAULT_LAYOUT);
+  const [layout, setLayout] = useState<LayoutItem[]>(() => criarLayoutPadrao());
 
   const handleDataLoaded = (parsedData: DemandRecord[]) => {
     setData(parsedData);
@@ -40,6 +47,17 @@ export default function App() {
 
   const handleBackToConfig = () => {
     setCurrentStep('config');
+  };
+
+  const handleResetApp = () => {
+    setData([]);
+    setTemplate(DEFAULT_TEMPLATE);
+    setPalette(DEFAULT_PALETTE);
+    setTitleFontSize(DEFAULT_TITLE_FONT_SIZE);
+    setContentFontSize(DEFAULT_CONTENT_FONT_SIZE);
+    setPreviewSingleIndex(null);
+    setLayout(criarLayoutPadrao());
+    setCurrentStep('landing');
   };
 
   return (
@@ -61,6 +79,7 @@ export default function App() {
           onPreviewSingle={handlePreviewSingle}
           layout={layout}
           setLayout={setLayout}
+          onResetApp={handleResetApp}
         />
       )}
       {currentStep === 'presentation' && (
