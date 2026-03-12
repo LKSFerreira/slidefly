@@ -72,15 +72,10 @@ Alinhar o repositorio com a identidade oficial do produto e remover ruido herdad
 
 **Entregas**
 
-- [x] ~~Corrigir o nome do produto para `Slidefly` em codigo, interface, metadados e documentacao.~~
 - [x] Corrigir o nome do produto para `Slidefly` em codigo, interface, metadados e documentacao visivel.
-- [x] ~~Revisar `package.json`, `metadata.json`, landing page, textos visiveis e arquivos auxiliares expostos ao usuario.~~
 - [x] Revisar `package.json`, `metadata.json`, `Landing.tsx` e `README.md` para alinhar os textos visiveis ao usuario.
-- [x] ~~Confirmar se o projeto seguira em `TypeScript` ou se havera migracao real para `JavaScript`.~~
 - [x] Confirmar `TypeScript` como stack oficial do projeto.
-- [x] ~~Alinhar `AGENTS.md`, regras de linguagem e documentacao tecnica com a stack efetivamente adotada.~~
 - [x] Alinhar `AGENTS.md`, `code.md` e `/.agents/rules/typescript.md` com a stack efetivamente adotada.
-- [x] ~~Mapear dependencias fora do escopo client-side e classificar o que deve ser removido.~~
 - [x] Mapear dependencias fora do escopo client-side e classificar a remocao de `express`, `@types/express`, `better-sqlite3`, `dotenv` e `@google/genai`.
 
 **Criterios de saida**
@@ -96,14 +91,13 @@ Permitir que o usuario trate os dados com agilidade antes de gerar a apresentaca
 
 **Entregas**
 
-- [x] ~~Criar uma camada de normalizacao de dados antes do gerador de apresentacao.~~
 - [x] Criar uma camada central de normalizacao de registros antes do preview, apresentacao e exportacoes.
 - [ ] Permitir pequenos ajustes pontuais por slide e por campo sem recarregar todo o CSV.
 - [ ] Permitir correcoes gramaticais e ajustes manuais de conteudo dentro da aplicacao.
-- [x] ~~Padronizar limpeza de espacos extras, quebras desnecessarias e valores vazios.~~
 - [x] Padronizar limpeza de espacos e quebras, remover prefixo numerico da fase e aplicar fallbacks configuraveis para prioridade e campos curtos.
 - [ ] Fortalecer o mapeamento de colunas com aliases e nomes equivalentes.
 - [ ] Garantir que campos vazios nao gerem blocos vazios no layout nem na exportacao.
+- [ ] **[Feedback User]** Implementar resiliencia no parsing de CSV para identificar e pular linhas de lixo antes do cabecalho (usando regex e suportando `,` ou `;`).
 
 **Criterios de saida**
 
@@ -121,10 +115,10 @@ Tornar os layouts mais inteligentes, legiveis e adaptativos ao conteudo real de 
 - [ ] Permitir mover blocos e colunas no layout `Personalizado`.
 - [ ] Permitir renomear colunas ou rotulos visuais no layout `Personalizado`.
 - [ ] Centralizar o conteudo e alinhar os blocos no meio quando a composicao pedir esse comportamento.
-- [x] ~~Aplicar limite maximo de configuracao para fonte: titulo `22` e texto `20`.~~
 - [x] Aplicar limite maximo de configuracao para fonte: titulo `22` e texto `22`.
+- [ ] **[Feedback User]** Aumentar o limite do tamanho do texto (conteudo) para `40`.
+- [ ] **[Feedback User]** Centralizar o conteudo das colunas: `Ações Realizadas`, `Próximas Atividades` e `Problemas Pendentes`.
 - [ ] Ocultar automaticamente blocos sem conteudo util.
-- [x] ~~Redistribuir largura e altura para aproveitar melhor areas com mais texto.~~
 - [x] Redistribuir largura e altura do layout `Padrao` conforme a densidade de texto, usando auto-reducao de fonte apenas como ultimo recurso.
 - [ ] Fazer colunas com pouco ou nenhum conteudo ocuparem menos espaco ou nenhum espaco.
 - [ ] Garantir que o layout configurado seja reaplicado aos demais slides com previsibilidade.
@@ -165,6 +159,8 @@ Melhorar legibilidade, uso do espaco e conforto operacional no configurador e na
 - [ ] Aplicar responsividade para aproveitar melhor o espaco horizontal e vertical.
 - [ ] Ajustar sidebar, preview e lista de slides para cenarios com muitos dados.
 - [ ] Melhorar a navegacao entre slides e a preservacao de contexto apos reordenacao.
+- [ ] **[Feedback User]** Melhorar o feedback e o reset de estado quando um arquivo invalido (nao CSV) e carregado, permitindo nova tentativa sem recarregar a pagina.
+- [ ] **[Feedback User]** Usar o nome do arquivo da imagem como titulo do slide no painel lateral ao carregar capas ou transicoes.
 - [ ] Revisar estados vazios, mensagens inline e feedback visual do fluxo.
 - [x] Unificar o canvas 16:9 do preview e da apresentacao para manter escala proporcional entre modos.
 - [x] Adicionar zoom de visualizacao discreto no preview do configurador sem alterar a fonte nem o layout real do slide.
@@ -183,7 +179,6 @@ Fechar o ciclo de reconstrucao com menos ruido tecnico e mais previsibilidade pa
 
 **Entregas**
 
-- [x] ~~Remover dependencias e artefatos fora do escopo definido do produto.~~
 - [x] Remover o primeiro lote seguro de dependencias fora do escopo: `express`, `@types/express`, `better-sqlite3`, `dotenv` e `@google/genai`.
 - [x] Mover `@vitejs/plugin-react` para `devDependencies`.
 - [x] Remover dependencias e artefatos fora do escopo definido do produto em lotes seguros e validar o impacto no build (clsx, tailwind-merge, tsx, autoprefixer).
@@ -200,51 +195,65 @@ Fechar o ciclo de reconstrucao com menos ruido tecnico e mais previsibilidade pa
 
 ---
 
-## 5. Backlog Priorizado
+## 5. Feedback User (Priorizado)
+
+Sessao dedicada aos feedbacks diretos do usuario para implementacao imediata ou organizada por prioridade técnica.
+
+| ID | Descricao | Fase | Prioridade | Status |
+|---|---|---|---|---|
+| FB01 | **Resiliencia no Parsing de CSV:** Identificar linha de cabecalho pulando lixo inicial (Regex + suporte a `,` e `;`). | Fase 1 | P1 | [x] Concluido |
+| FB02 | **Recuperacao de Erro no Upload:** Resolver trava de estado que exige reload ao subir arquivo invalido. | Fase 4 | P1 | [x] Concluido |
+| FB03 | **Nome da Imagem como Titulo:** Exibir nome do arquivo original no botao do slide em vez de "IMAGEM". | Fase 4 | P2 | [x] Concluido |
+| FB04 | **Centralizacao de Conteudo:** Centralizar texto de Acoes, Proximas Atividades e Problemas. | Fase 2 | P2 | [x] Concluido |
+| FB05 | **Aumento de Limite de Fonte:** Permitir que o tamanho do conteudo chegue ate `40` (atual 30). | Fase 2 | P2 | [x] Concluido |
+
+---
+
+## 6. Backlog Priorizado
 
 | Prioridade | Tema | Resultado esperado |
 |---|---|---|
 | P0 | Nome oficial `Slidefly` | Nenhuma referencia antiga visivel no produto |
 | P0 | Roadmap e baseline | Documento vivo sincronizado com PRD e codigo |
+| P1 | **[FB01]** Resiliencia CSV | Parsing robusto mesmo com lixo no inicio do arquivo |
+| P1 | **[FB02]** Reset de Upload | Fluxo de erro amigavel sem necessidade de F5 |
 | P1 | Edicao leve de dados | Pequenas correcoes sem reimportar CSV |
 | P1 | Tratamento de dados | Conteudo saneado antes do gerador |
 | P1 | Exportacao estavel | PDF e PPTX sem travamento evidente |
 | P1 | Layout `Personalizado` | Blocos moviveis, renomeaveis e reaplicaveis |
-| P2 | Limites visuais | Titulo ate 22 e texto ate 20 dentro da regra definida |
+| P2 | **[FB04/05]** Refino Layout | Centralizacao de colunas e fonte ate 40 |
+| P2 | **[FB03]** UX Imagens | Nomes de arquivos preservados na lista de slides |
 | P2 | Responsividade adaptativa | Espaco redistribuido conforme densidade de texto |
 | P2 | Limpeza tecnica | Dependencias fora do escopo removidas ou justificadas |
 
 ---
 
-## 6. Riscos Abertos
+## 7. Riscos Abertos
 
 | Risco | Impacto | Direcao de tratamento |
 |---|---|---|
-| ~~Divergencia entre `JavaScript` e `TypeScript`~~ | ~~Regras e implementacao podiam seguir em sentidos diferentes~~ | ~~Decidir stack oficial e alinhar a documentacao~~ |
 | Exportacao do layout `Personalizado` para PPTX | Alta chance de baixa fidelidade visual | Criar adaptador proprio ou documentar limites aceitaveis |
 | Renderizacao PDF baseada em espera fixa | Travamento ou arquivo incompleto em lotes maiores | Trocar por fluxo deterministico de render/export |
-| ~~Dependencias fora do escopo do PRD~~ | ~~Complexidade desnecessaria e manutencao mais cara~~ | ~~Revisar necessidade real e remover o excedente~~ |
 | Dependencias fora do escopo do PRD | [x] Auditoria concluida e primeira limpeza aprovada | Prosseguir com remocoes seguras e validacao tecnica |
 
 ---
 
-## 7. Decisoes em Aberto
+## 8. Decisoes em Aberto
 
-- [x] ~~Confirmar a stack oficial do projeto: manter `TypeScript` ou migrar de fato para `JavaScript`.~~
 - [x] `TypeScript` confirmado como stack oficial do projeto.
 - [ ] Definir o nivel de fidelidade exigido do `PPTX` para o layout `Personalizado`.
-- [x] ~~Validar se a regra `titulo 22 / texto 20` sera tratada apenas como limite de fonte ou se tambem exigira truncamento de conteudo.~~
-- [x] Regra fechada para o layout atual: titulo `22`, texto `22` e auto-reducao de fonte apenas quando a redistribuicao de espaco nao resolver.
+- [x] Regra fechada para o layout atual: titulo `22`, texto `22` (ajustado para 40 conforme feedback) e auto-reducao de fonte apenas quando a redistribuicao de espaco nao resolver.
 
 ---
 
-## 8. Definicao de Pronto para o Proximo Marco
+## 9. Definicao de Pronto para o Proximo Marco
 
 O proximo marco relevante do Slidefly sera considerado pronto quando:
 
 - o nome do produto estiver corrigido no codigo e na interface;
 - o roadmap estiver sendo usado como referencia real de trabalho;
 - houver tratamento e edicao leve de dados antes do gerador;
+- os feedbacks criticos de parsing e reset de upload estiverem implementados;
 - os layouts reagirem melhor a campos vazios e textos longos;
 - PDF e PPTX funcionarem sem travamentos evidentes;
 - a aplicacao estiver mais coerente com o PRD e com o escopo client-side.

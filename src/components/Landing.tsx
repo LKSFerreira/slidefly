@@ -23,8 +23,8 @@ export default function Landing({ onDataLoaded }: LandingProps) {
 
   const processFile = async (file: File) => {
     setError(null);
-    if (!file.name.endsWith('.csv')) {
-      setError('Por favor, envie um arquivo .csv válido.');
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      setError('O arquivo selecionado não é um CSV. Por favor, envie um arquivo .csv válido.');
       return;
     }
 
@@ -32,21 +32,25 @@ export default function Landing({ onDataLoaded }: LandingProps) {
       const data = await parseCSV(file);
       onDataLoaded(data);
     } catch (err: any) {
-      setError(err.message || 'Erro ao processar o arquivo.');
+      setError(err.message || 'Erro ao processar o arquivo. Verifique o formato e tente novamente.');
     }
   };
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
+    setError(null);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       processFile(e.dataTransfer.files[0]);
     }
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null);
     if (e.target.files && e.target.files.length > 0) {
       processFile(e.target.files[0]);
+      // Reset the input value so the same file can be selected again if needed
+      e.target.value = '';
     }
   };
 

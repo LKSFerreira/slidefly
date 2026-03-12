@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { DemandRecord, PaletteColors } from '../../types';
 
-const LIMITE_TITULO_PADRAO = 30;
-const LIMITE_TEXTO_PADRAO = 30;
+const LIMITE_TITULO_PADRAO = 40;
+const LIMITE_TEXTO_PADRAO = 40;
 const MULTIPLICADOR_TITULO = 1.1;
 const ESCALA_MINIMA_AUTOFIT = 0.72;
 const PASSO_AUTOFIT = 0.03;
@@ -266,6 +266,7 @@ export default function Padrao({
                 corpoTamanho={tamanhoCorpo}
                 alturaCabecalho={alturaCabecalhoConteudo}
                 corpoRef={registrarCorpo('acoes')}
+                corpoCentralizado
               />
             </div>
             <div
@@ -283,6 +284,7 @@ export default function Padrao({
                 corpoTamanho={tamanhoCorpo}
                 alturaCabecalho={alturaCabecalhoConteudo}
                 corpoRef={registrarCorpo('proximas')}
+                corpoCentralizado
               />
             </div>
           </div>
@@ -302,6 +304,7 @@ export default function Padrao({
               corpoTamanho={tamanhoCorpo}
               alturaCabecalho={alturaCabecalhoConteudo}
               corpoRef={registrarCorpo('problemas')}
+              corpoCentralizado
             />
           </div>
         </div>

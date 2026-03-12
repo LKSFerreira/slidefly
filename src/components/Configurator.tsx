@@ -98,12 +98,13 @@ export default function Configurator({
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
       const reader = new FileReader();
       reader.onload = (event) => {
         const base64 = event.target?.result as string;
         const newRecord: DemandRecord = {
           id: `IMG-${Date.now()}`,
-          title: 'Imagem de Capa',
+          title: fileName || 'Imagem de Capa',
           type: 'image',
           imageUrl: base64,
         };
@@ -111,6 +112,8 @@ export default function Configurator({
         setPreviewIndex(data.length);
       };
       reader.readAsDataURL(file);
+      // Reset input
+      e.target.value = '';
     }
   };
 
@@ -247,7 +250,7 @@ export default function Configurator({
                     <div className="flex items-center gap-2 bg-slate-800 rounded-lg p-1">
                       <button onClick={() => setTitleFontSize(prev => Math.max(8, prev - 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">-</button>
                       <span className="text-xs w-4 text-center">{titleFontSize}</span>
-                      <button onClick={() => setTitleFontSize(prev => Math.min(30, prev + 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">+</button>
+                      <button onClick={() => setTitleFontSize(prev => Math.min(40, prev + 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">+</button>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
@@ -255,7 +258,7 @@ export default function Configurator({
                     <div className="flex items-center gap-2 bg-slate-800 rounded-lg p-1">
                       <button onClick={() => setContentFontSize(prev => Math.max(8, prev - 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">-</button>
                       <span className="text-xs w-4 text-center">{contentFontSize}</span>
-                      <button onClick={() => setContentFontSize(prev => Math.min(30, prev + 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">+</button>
+                      <button onClick={() => setContentFontSize(prev => Math.min(40, prev + 1))} className="w-5 h-5 flex items-center justify-center hover:bg-slate-700 rounded text-slate-300">+</button>
                     </div>
                   </div>
                 </div>
@@ -314,8 +317,16 @@ export default function Configurator({
                                 className="ml-2 overflow-hidden cursor-pointer flex-1"
                                 onClick={() => setPreviewIndex(index)}
                               >
-                                <div className="text-xs font-bold text-cyan-400 truncate">{record.type === 'image' ? 'IMAGEM' : record.id}</div>
-                                <div className="text-xs text-slate-300 truncate">{record.title}</div>
+                                {record.type === 'image' ? (
+                                  <div className="text-xs font-bold text-emerald-400 truncate uppercase tracking-tight">
+                                    IMAGEM: {record.title}
+                                  </div>
+                                ) : (
+                                  <>
+                                    <div className="text-xs font-bold text-cyan-400 truncate">{record.id}</div>
+                                    <div className="text-xs text-slate-300 truncate">{record.title}</div>
+                                  </>
+                                )}
                               </div>
                               <button
                                 onClick={(e) => {

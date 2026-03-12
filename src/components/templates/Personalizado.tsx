@@ -27,8 +27,8 @@ export default function Personalizado({
   contentFontSize = 14,
   canvasScale = 1,
 }: PersonalizadoProps) {
-  const tituloConfigurado = limitar(titleFontSize, 8, 30);
-  const textoConfigurado = limitar(contentFontSize, 8, 30);
+  const tituloConfigurado = limitar(titleFontSize, 8, 40);
+  const textoConfigurado = limitar(contentFontSize, 8, 40);
   const tamanhoTituloPrincipal = Math.max(24, tituloConfigurado * 1.6 * 1.1);
   const tamanhoTituloRotulo = tituloConfigurado * 1.1;
 
@@ -103,27 +103,27 @@ export default function Personalizado({
         );
       case 'actions':
         return (
-          <div className="flex h-full flex-col">
+          <div className="flex h-full flex-col text-center">
             <div className="mb-1 uppercase tracking-widest opacity-50" style={{ fontSize: `${tamanhoTituloRotulo}px` }}>Ações</div>
-            <div className="custom-scrollbar flex-1 overflow-y-auto opacity-80" style={{ fontSize: `${textoConfigurado}px` }}>
+            <div className="custom-scrollbar flex-1 overflow-y-auto whitespace-pre-wrap opacity-80" style={{ fontSize: `${textoConfigurado}px` }}>
               {record.actions}
             </div>
           </div>
         );
       case 'nextActivities':
         return (
-          <div className="flex h-full flex-col">
+          <div className="flex h-full flex-col text-center">
             <div className="mb-1 uppercase tracking-widest opacity-50" style={{ fontSize: `${tamanhoTituloRotulo}px` }}>Próximas Atividades</div>
-            <div className="custom-scrollbar flex-1 overflow-y-auto opacity-80" style={{ fontSize: `${textoConfigurado}px` }}>
+            <div className="custom-scrollbar flex-1 overflow-y-auto whitespace-pre-wrap opacity-80" style={{ fontSize: `${textoConfigurado}px` }}>
               {record.nextActivities}
             </div>
           </div>
         );
       case 'problems':
         return (
-          <div className="flex h-full flex-col">
+          <div className="flex h-full flex-col text-center">
             <div className="mb-1 uppercase tracking-widest opacity-50" style={{ fontSize: `${tamanhoTituloRotulo}px` }}>Problemas</div>
-            <div className="custom-scrollbar flex-1 overflow-y-auto text-red-400" style={{ fontSize: `${textoConfigurado}px` }}>
+            <div className="custom-scrollbar flex-1 overflow-y-auto whitespace-pre-wrap text-red-400" style={{ fontSize: `${textoConfigurado}px` }}>
               {record.problems}
             </div>
           </div>
