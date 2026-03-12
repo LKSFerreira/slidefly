@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout/legacy';
 import { DemandRecord, LayoutItem, PaletteColors } from '../../types';
 import 'react-grid-layout/css/styles.css';
@@ -27,6 +27,7 @@ export default function Personalizado({
   contentFontSize = 14,
   canvasScale = 1,
 }: PersonalizadoProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const tituloConfigurado = limitar(titleFontSize, 8, 40);
   const textoConfigurado = limitar(contentFontSize, 8, 40);
   const tamanhoTituloPrincipal = Math.max(24, tituloConfigurado * 1.6 * 1.1);
@@ -43,6 +44,38 @@ export default function Personalizado({
           h: item.h,
         })),
       );
+    }
+  }
+
+  function handleDragStop(currentLayout: any, oldItem: any, newItem: any, placeholder: any, e: MouseEvent | TouchEvent) {
+    if (!isEditable || !onLayoutChange || !containerRef.current) return;
+
+    const rect = containerRef.current.getBoundingClientRect();
+    
+    let clientX = 0;
+    let clientY = 0;
+
+    if ('changedTouches' in e && e.changedTouches.length > 0) {
+      clientX = e.changedTouches[0].clientX;
+      clientY = e.changedTouches[0].clientY;
+    } else if ('clientX' in e) {
+      clientX = (e as MouseEvent).clientX;
+      clientY = (e as MouseEvent).clientY;
+    } else {
+      return;
+    }
+
+    // Margem de tolerância externa para exclusão (px)
+    const margin = 30;
+    const isOutside = 
+      clientX < rect.left - margin || 
+      clientX > rect.right + margin || 
+      clientY < rect.top - margin || 
+      clientY > rect.bottom + margin;
+
+    if (isOutside) {
+      const newLayoutState = layout.filter(item => item.i !== newItem.i);
+      onLayoutChange(newLayoutState);
     }
   }
 
@@ -134,7 +167,7 @@ export default function Personalizado({
   }
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full" ref={containerRef}>
       <ResponsiveGridLayout
         className="layout"
         layouts={{ lg: layout }}
@@ -146,6 +179,7 @@ export default function Personalizado({
         isDraggable={isEditable}
         isResizable={isEditable}
         onLayoutChange={handleLayoutChange}
+        onDragStop={handleDragStop}
         margin={[12, 12]}
       >
         {layout.map((item) => (
