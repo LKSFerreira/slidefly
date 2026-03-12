@@ -211,8 +211,8 @@ Sessao dedicada aos feedbacks diretos do usuario para implementacao imediata ou 
 | FB03 | **Nome da Imagem como Titulo:** Exibir nome do arquivo original no botao do slide em vez de "IMAGEM". | Fase 4 | P2 | [x] Concluido |
 | FB04 | **Centralizacao de Conteudo:** Centralizar texto de Acoes, Proximas Atividades e Problemas. | Fase 2 | P2 | [x] Concluido |
 | FB05 | **Aumento de Limite de Fonte:** Permitir que o tamanho do conteudo chegue ate `40` (atual 30). | Fase 2 | P2 | [x] Concluido |
-| FB06 | **Remocao de Prefixo IMAGEM:** Exibir apenas o nome do arquivo no card, sem o prefixo "IMAGEM: ". | Fase 4 | P2 | [ ] Pendente |
-| FB07 | **Upload Multiplo de Imagens:** Permitir carregar varias imagens de uma vez para capas/transicoes. | Fase 4 | P1 | [ ] Pendente |
+| FB06 | **Remocao de Prefixo IMAGEM:** Exibir apenas o nome do arquivo no card, sem o prefixo "IMAGEM: ". | Fase 4 | P2 | [x] Concluido |
+| FB07 | **Upload Multiplo de Imagens:** Permitir carregar varias imagens de uma vez para capas/transicoes. | Fase 4 | P1 | [x] Concluido |
 | FB08 | **Fidelidade de Espacamento na Exportacao:** Corrigir perda de padding/layout no PDF e PPTX (texto "grudado"). | Fase 3 | P1 | [ ] Pendente |
 | FB09 | **Performance de Exportacao:** Reduzir tempo de geracao para volumes altos (80+ slides). | Fase 3 | P1 | [ ] Pendente |
 | FB10 | **Feedback de Exportacao e Trava Visual:** Melhorar estados de carregamento e evitar clique duplo em PDF/PPTX. | Fase 3 | P1 | [ ] Pendente |

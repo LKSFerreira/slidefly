@@ -10,7 +10,7 @@ import { exportToPptx } from '../utils/exportPptx';
 
 interface ConfiguratorProps {
   data: DemandRecord[];
-  setData: (data: DemandRecord[]) => void;
+  setData: React.Dispatch<React.SetStateAction<DemandRecord[]>>;
   template: TemplateType;
   setTemplate: (t: TemplateType) => void;
   palette: PaletteType;
@@ -95,26 +95,40 @@ export default function Configurator({
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const base64 = event.target?.result as string;
-        const newRecord: DemandRecord = {
-          id: `IMG-${Date.now()}`,
-          title: fileName || 'Imagem de Capa',
-          type: 'image',
-          imageUrl: base64,
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const filePromises = Array.from(files).map((file) => {
+      return new Promise<DemandRecord>((resolve) => {
+        const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
+        const reader = new FileReader();
+        
+        reader.onload = (event) => {
+          const base64 = event.target?.result as string;
+          resolve({
+            id: `IMG-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            title: fileName || 'Imagem de Capa',
+            type: 'image',
+            imageUrl: base64,
+          });
         };
-        setData([...data, newRecord]);
-        setPreviewIndex(data.length);
-      };
-      reader.readAsDataURL(file);
-      // Reset input
-      e.target.value = '';
-    }
+        
+        reader.readAsDataURL(file);
+      });
+    });
+
+    const newRecords = await Promise.all(filePromises);
+
+    setData((prev) => {
+      const newData = [...prev, ...newRecords];
+      // Move o preview para a primeira imagem do novo lote
+      setPreviewIndex(prev.length);
+      return newData;
+    });
+
+    // Reset input
+    e.target.value = '';
   };
 
   const handleMoveSlide = () => {
@@ -319,7 +333,7 @@ export default function Configurator({
                               >
                                 {record.type === 'image' ? (
                                   <div className="text-xs font-bold text-emerald-400 truncate uppercase tracking-tight">
-                                    IMAGEM: {record.title}
+                                    {record.title}
                                   </div>
                                 ) : (
                                   <>
