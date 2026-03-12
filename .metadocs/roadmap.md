@@ -1,7 +1,7 @@
 # Slidefly Roadmap
 
 > Documento vivo do produto.
-> Ultima atualizacao: 2026-03-06.
+> Ultima atualizacao: 2026-03-12.
 > Fonte de verdade para prioridades, gaps tecnicos e criterios de aceite da reconstrucao do Slidefly.
 
 ---
@@ -97,7 +97,7 @@ Permitir que o usuario trate os dados com agilidade antes de gerar a apresentaca
 - [x] Padronizar limpeza de espacos e quebras, remover prefixo numerico da fase e aplicar fallbacks configuraveis para prioridade e campos curtos.
 - [ ] Fortalecer o mapeamento de colunas com aliases e nomes equivalentes.
 - [ ] Garantir que campos vazios nao gerem blocos vazios no layout nem na exportacao.
-- [ ] **[Feedback User]** Implementar resiliencia no parsing de CSV para identificar e pular linhas de lixo antes do cabecalho (usando regex e suportando `,` ou `;`).
+- [x] **[Feedback User]** Implementar resiliencia no parsing de CSV para identificar e pular linhas de lixo antes do cabecalho (usando regex e suportando `,` e `;`).
 
 **Criterios de saida**
 
@@ -116,8 +116,8 @@ Tornar os layouts mais inteligentes, legiveis e adaptativos ao conteudo real de 
 - [ ] Permitir renomear colunas ou rotulos visuais no layout `Personalizado`.
 - [ ] Centralizar o conteudo e alinhar os blocos no meio quando a composicao pedir esse comportamento.
 - [x] Aplicar limite maximo de configuracao para fonte: titulo `22` e texto `22`.
-- [ ] **[Feedback User]** Aumentar o limite do tamanho do texto (conteudo) para `40`.
-- [ ] **[Feedback User]** Centralizar o conteudo das colunas: `Ações Realizadas`, `Próximas Atividades` e `Problemas Pendentes`.
+- [x] **[Feedback User]** Aumentar o limite do tamanho do texto (conteudo) para `40`.
+- [x] **[Feedback User]** Centralizar o conteudo das colunas: `Ações Realizadas`, `Próximas Atividades` e `Problemas Pendentes`.
 - [ ] Ocultar automaticamente blocos sem conteudo util.
 - [x] Redistribuir largura e altura do layout `Padrao` conforme a densidade de texto, usando auto-reducao de fonte apenas como ultimo recurso.
 - [ ] Fazer colunas com pouco ou nenhum conteudo ocuparem menos espaco ou nenhum espaco.
@@ -140,6 +140,9 @@ Eliminar travamentos e aproximar a exportacao final da experiencia vista no prev
 - [ ] Investigar travamentos na exportacao de PPTX.
 - [ ] Remover dependencias de espera fixa onde isso gerar fragilidade.
 - [ ] Exibir estado de progresso ou bloqueio controlado durante a exportacao.
+- [ ] **[Feedback User]** Melhorar feedback visual durante a exportacao e impedir disparo duplo/concorrente de PDF/PPTX.
+- [ ] **[Feedback User]** Corrigir perda de padding/espacamento no cabecalho e colunas durante a exportacao para PDF e PPTX (texto "grudado").
+- [ ] **[Feedback User]** Otimizar performance de exportacao para grandes volumes (80+ slides), reduzindo tempo de processamento.
 - [ ] Garantir que PDF e PPTX respeitem ordem final, paleta, ocultacao de vazios e conteudo tratado.
 - [ ] Definir estrategia clara para exportar o layout `Personalizado` com fidelidade aceitavel no PPTX.
 
@@ -159,8 +162,10 @@ Melhorar legibilidade, uso do espaco e conforto operacional no configurador e na
 - [ ] Aplicar responsividade para aproveitar melhor o espaco horizontal e vertical.
 - [ ] Ajustar sidebar, preview e lista de slides para cenarios com muitos dados.
 - [ ] Melhorar a navegacao entre slides e a preservacao de contexto apos reordenacao.
-- [ ] **[Feedback User]** Melhorar o feedback e o reset de estado quando um arquivo invalido (nao CSV) e carregado, permitindo nova tentativa sem recarregar a pagina.
-- [ ] **[Feedback User]** Usar o nome do arquivo da imagem como titulo do slide no painel lateral ao carregar capas ou transicoes.
+- [x] **[Feedback User]** Melhorar o feedback e o reset de estado quando um arquivo invalido (nao CSV) e carregado, permitindo nova tentativa sem recarregar a pagina.
+- [x] **[Feedback User]** Usar o nome do arquivo da imagem como titulo do slide no painel lateral ao carregar capas ou transicoes.
+- [ ] **[Feedback User]** Remover prefixo "IMAGEM: " do titulo do card de slides de imagem.
+- [ ] **[Feedback User]** Habilitar upload multiplo de imagens para capas e transicoes.
 - [ ] Revisar estados vazios, mensagens inline e feedback visual do fluxo.
 - [x] Unificar o canvas 16:9 do preview e da apresentacao para manter escala proporcional entre modos.
 - [x] Adicionar zoom de visualizacao discreto no preview do configurador sem alterar a fonte nem o layout real do slide.
@@ -206,6 +211,11 @@ Sessao dedicada aos feedbacks diretos do usuario para implementacao imediata ou 
 | FB03 | **Nome da Imagem como Titulo:** Exibir nome do arquivo original no botao do slide em vez de "IMAGEM". | Fase 4 | P2 | [x] Concluido |
 | FB04 | **Centralizacao de Conteudo:** Centralizar texto de Acoes, Proximas Atividades e Problemas. | Fase 2 | P2 | [x] Concluido |
 | FB05 | **Aumento de Limite de Fonte:** Permitir que o tamanho do conteudo chegue ate `40` (atual 30). | Fase 2 | P2 | [x] Concluido |
+| FB06 | **Remocao de Prefixo IMAGEM:** Exibir apenas o nome do arquivo no card, sem o prefixo "IMAGEM: ". | Fase 4 | P2 | [ ] Pendente |
+| FB07 | **Upload Multiplo de Imagens:** Permitir carregar varias imagens de uma vez para capas/transicoes. | Fase 4 | P1 | [ ] Pendente |
+| FB08 | **Fidelidade de Espacamento na Exportacao:** Corrigir perda de padding/layout no PDF e PPTX (texto "grudado"). | Fase 3 | P1 | [ ] Pendente |
+| FB09 | **Performance de Exportacao:** Reduzir tempo de geracao para volumes altos (80+ slides). | Fase 3 | P1 | [ ] Pendente |
+| FB10 | **Feedback de Exportacao e Trava Visual:** Melhorar estados de carregamento e evitar clique duplo em PDF/PPTX. | Fase 3 | P1 | [ ] Pendente |
 
 ---
 
@@ -215,6 +225,9 @@ Sessao dedicada aos feedbacks diretos do usuario para implementacao imediata ou 
 |---|---|---|
 | P0 | Nome oficial `Slidefly` | Nenhuma referencia antiga visivel no produto |
 | P0 | Roadmap e baseline | Documento vivo sincronizado com PRD e codigo |
+| P1 | **[FB08/09]** Estabilidade Exportacao | Fidelidade de padding e performance em lotes grandes |
+| P1 | **[FB10]** UX Exportacao | Feedback claro de processamento e trava de botoes |
+| P1 | **[FB07]** Upload Multiplo | Agilidade na inclusao de capas e transicoes |
 | P1 | **[FB01]** Resiliencia CSV | Parsing robusto mesmo com lixo no inicio do arquivo |
 | P1 | **[FB02]** Reset de Upload | Fluxo de erro amigavel sem necessidade de F5 |
 | P1 | Edicao leve de dados | Pequenas correcoes sem reimportar CSV |
@@ -222,7 +235,7 @@ Sessao dedicada aos feedbacks diretos do usuario para implementacao imediata ou 
 | P1 | Exportacao estavel | PDF e PPTX sem travamento evidente |
 | P1 | Layout `Personalizado` | Blocos moviveis, renomeaveis e reaplicaveis |
 | P2 | **[FB04/05]** Refino Layout | Centralizacao de colunas e fonte ate 40 |
-| P2 | **[FB03]** UX Imagens | Nomes de arquivos preservados na lista de slides |
+| P2 | **[FB03/06]** UX Imagens | Nomes de arquivos limpos e preservados na lista de slides |
 | P2 | Responsividade adaptativa | Espaco redistribuido conforme densidade de texto |
 | P2 | Limpeza tecnica | Dependencias fora do escopo removidas ou justificadas |
 
