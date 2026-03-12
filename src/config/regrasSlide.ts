@@ -33,8 +33,8 @@ function limparTextoLongo(valor?: string): string {
     .replace(/\r\n/g, '\n')
     .split('\n')
     .map((linha) => compactarEspacos(linha))
-    .filter(Boolean)
-    .join('\n');
+    .join('\n')
+    .trim();
 }
 
 export function resolverTextoCurto(valor?: string, fallback = VALOR_NAO_DEFINIDO): string {

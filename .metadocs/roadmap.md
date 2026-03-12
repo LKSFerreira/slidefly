@@ -216,6 +216,8 @@ Sessao dedicada aos feedbacks diretos do usuario para implementacao imediata ou 
 | FB08 | **Fidelidade de Espacamento na Exportacao:** Corrigir perda de padding/layout no PDF e PPTX (texto "grudado"). | Fase 3 | P1 | [ ] Pendente |
 | FB09 | **Performance de Exportacao:** Reduzir tempo de geracao para volumes altos (80+ slides). | Fase 3 | P1 | [ ] Pendente |
 | FB10 | **Feedback de Exportacao e Trava Visual:** Melhorar estados de carregamento e evitar clique duplo em PDF/PPTX. | Fase 3 | P1 | [ ] Pendente |
+| FB11 | **Suporte a Quebras de Linha:** Preservar quebras de linha (`\n`) vindas do CSV nos blocos de texto do slide. | Fase 1 | P1 | [x] Concluido |
+| FB12 | **Excluir por Drag-out:** Permitir excluir um bloco no layout Personalizado ao arrastá-lo para fora da área do slide. | Fase 2 | P2 | [x] Concluido |
 
 ---
 
@@ -229,6 +231,7 @@ Sessao dedicada aos feedbacks diretos do usuario para implementacao imediata ou 
 | P1 | **[FB10]** UX Exportacao | Feedback claro de processamento e trava de botoes |
 | P1 | **[FB07]** Upload Multiplo | Agilidade na inclusao de capas e transicoes |
 | P1 | **[FB01]** Resiliencia CSV | Parsing robusto mesmo com lixo no inicio do arquivo |
+| P1 | **[FB11]** Quebras de Linha | Textos multi-linha respeitando a formatação original do CSV |
 | P1 | **[FB02]** Reset de Upload | Fluxo de erro amigavel sem necessidade de F5 |
 | P1 | Edicao leve de dados | Pequenas correcoes sem reimportar CSV |
 | P1 | Tratamento de dados | Conteudo saneado antes do gerador |
