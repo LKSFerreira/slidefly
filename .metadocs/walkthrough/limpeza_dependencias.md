@@ -23,15 +23,17 @@ Ajuste estrutural adicional:
 ## O que foi feito
 
 1. Foi realizada uma auditoria de uso real das dependencias no codigo.
-2. O `package.json` foi atualizado para remover o grupo fora do escopo.
-3. O `package-lock.json` foi sincronizado usando Docker, conforme a regra do projeto.
-4. A validacao foi executada no container com:
+2. O `package.json` foi atualizado para remover o grupo fora do escopo em dois lotes seguros.
+3. **Lote 1:** `express`, `@types/express`, `better-sqlite3`, `dotenv` e `@google/genai`.
+4. **Lote 2:** `clsx`, `tailwind-merge`, `tsx` e `autoprefixer`.
+5. O `package-lock.json` foi sincronizado usando Docker, conforme a regra do projeto.
+6. A validacao foi executada no container com:
 
 ```bash
 docker compose -f .docker/compose.yaml run --rm app sh -lc "npm install && npm run lint"
 ```
 
-5. O `roadmap.md` foi atualizado preservando historico com `~~ ~~` e `[x]`.
+7. O `roadmap.md` foi atualizado preservando historico com `~~ ~~` e `[x]`.
 
 ## Resultado
 
@@ -41,5 +43,5 @@ docker compose -f .docker/compose.yaml run --rm app sh -lc "npm install && npm r
 
 ## Observacoes
 
-- Ainda existem dependencias suspeitas ou potencialmente herdadas para uma segunda rodada de limpeza, como `clsx`, `tailwind-merge`, `tsx` e `autoprefixer`.
-- A limpeza futura deve continuar em lotes pequenos para reduzir risco de regressao.
+- As dependencias foram reduzidas ao minimo necessario para o funcionamento da SPA.
+- O processo de limpeza em lotes pequenos garantiu que o impacto no build fosse monitorado e mitigado com sucesso.
