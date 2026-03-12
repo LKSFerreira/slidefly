@@ -286,7 +286,7 @@ export default function Configurator({
             <label className="flex items-center justify-center gap-2 w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl cursor-pointer transition-colors border border-slate-700 border-dashed">
               <ImagePlus className="w-5 h-5" />
               <span className="text-sm font-medium">Fazer upload de imagem</span>
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+              <input type="file" accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
             </label>
           </div>
 
