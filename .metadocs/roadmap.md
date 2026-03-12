@@ -186,7 +186,7 @@ Fechar o ciclo de reconstrucao com menos ruido tecnico e mais previsibilidade pa
 - [x] ~~Remover dependencias e artefatos fora do escopo definido do produto.~~
 - [x] Remover o primeiro lote seguro de dependencias fora do escopo: `express`, `@types/express`, `better-sqlite3`, `dotenv` e `@google/genai`.
 - [x] Mover `@vitejs/plugin-react` para `devDependencies`.
-- [ ] Remover dependencias e artefatos fora do escopo definido do produto em lotes seguros adicionais e validar o impacto no build.
+- [x] Remover dependencias e artefatos fora do escopo definido do produto em lotes seguros e validar o impacto no build (clsx, tailwind-merge, tsx, autoprefixer).
 - [ ] Revisar build, lint e consistencia geral do projeto.
 - [ ] Validar cenarios reais com CSVs representativos.
 - [ ] Atualizar documentacao minima de uso e manutencao.
