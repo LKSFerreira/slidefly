@@ -15,7 +15,15 @@ interface OpcoesCapturaSlides {
 
 function aguardarFrame() {
   return new Promise<void>((resolve) => {
-    window.requestAnimationFrame(() => resolve());
+    let resolvido = false;
+    const finalizar = () => {
+      if (!resolvido) {
+        resolvido = true;
+        resolve();
+      }
+    };
+    window.requestAnimationFrame(finalizar);
+    setTimeout(finalizar, 50);
   });
 }
 
@@ -35,8 +43,11 @@ async function aguardarLayoutEstavel(slide: HTMLDivElement) {
   let ultimaAltura = 0;
   let ultimaLargura = 0;
   let framesEstaveis = 0;
+  let tentativas = 0;
+  const maxTentativas = 40;
 
-  while (framesEstaveis < 4) {
+  while (framesEstaveis < 4 && tentativas < maxTentativas) {
+    tentativas += 1;
     await aguardarFrame();
     const alturaAtual = slide.scrollHeight;
     const larguraAtual = slide.scrollWidth;

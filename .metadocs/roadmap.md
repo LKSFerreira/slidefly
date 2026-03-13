@@ -218,6 +218,8 @@ Sessao dedicada aos feedbacks diretos do usuario para implementacao imediata ou 
 | FB10 | **Feedback de Exportacao e Trava Visual:** Melhorar estados de carregamento e evitar clique duplo em PDF/PPTX. | Fase 3 | P1 | [ ] Pendente |
 | FB11 | **Suporte a Quebras de Linha:** Preservar quebras de linha (`\n`) vindas do CSV nos blocos de texto do slide. | Fase 1 | P1 | [x] Concluido |
 | FB12 | **Excluir por Drag-out:** Permitir excluir um bloco no layout Personalizado ao arrastá-lo para fora da área do slide. | Fase 2 | P2 | [x] Concluido |
+| FB13 | **Salvar Progresso:** Permitir salvar o estado da apresentação para não perder o trabalho ao fechar a aba do navegador. | Fase 4 | P1 | [ ] Pendente |
+| FB14 | **Falha de Exportação:** Investigar e corrigir erro onde a exportação não conclui mesmo com apresentações de poucos slides. | Fase 3 | P0 | [x] Concluido |
 
 ---
 
@@ -227,8 +229,10 @@ Sessao dedicada aos feedbacks diretos do usuario para implementacao imediata ou 
 |---|---|---|
 | P0 | Nome oficial `Slidefly` | Nenhuma referencia antiga visivel no produto |
 | P0 | Roadmap e baseline | Documento vivo sincronizado com PRD e codigo |
+| P0 | ~~**[FB14]** Bug Exportação~~ | ~~Resolver falha crítica que impede exportação mesmo com poucos slides~~ |
 | P1 | **[FB08/09]** Estabilidade Exportacao | Fidelidade de padding e performance em lotes grandes |
 | P1 | **[FB10]** UX Exportacao | Feedback claro de processamento e trava de botoes |
+| P1 | **[FB13]** Salvar Progresso | Apresentação mantida na memória do navegador entre sessões |
 | P1 | **[FB07]** Upload Multiplo | Agilidade na inclusao de capas e transicoes |
 | P1 | **[FB01]** Resiliencia CSV | Parsing robusto mesmo com lixo no inicio do arquivo |
 | P1 | **[FB11]** Quebras de Linha | Textos multi-linha respeitando a formatação original do CSV |
