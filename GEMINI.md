@@ -32,10 +32,10 @@ bash dev.sh --build  # Rebuild das imagens
 
 ### Comandos npm (dentro do container ou local)
 ```bash
-npm run dev      # Inicia servidor de desenvolvimento (porta 3000)
-npm run build    # Gera build de produção
-npm run lint     # Checagem de tipos (tsc)
-npm run preview  # Preview do build local
+bash exec.sh run dev      # Inicia servidor de desenvolvimento (porta 3000)
+bash exec.sh run build    # Gera build de produção
+bash exec.sh run lint     # Checagem de tipos (tsc)
+bash exec.sh run preview  # Preview do build local
 ```
 
 ## ⚖️ Fluxo de Trabalho Obrigatório (Regra de Ouro)
