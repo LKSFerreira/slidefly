@@ -71,7 +71,28 @@ export default function Configurator({
   };
 
   const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
+    // Se solto fora de uma área válida, consideramos como exclusão do slide
+    if (!result.destination) {
+      const items = Array.from(data);
+      items.splice(result.source.index, 1);
+      setData(items);
+
+      // Ajusta o preview se o slide excluído for o mesmo ou estiver antes
+      if (items.length === 0) {
+        setPreviewIndex(0); // Lista vazia, força para 0 (handled default in previewRecord)
+      } else if (previewIndex === result.source.index) {
+        // Se o excluído for o que estava sendo visto, tenta mostrar o próximo.
+        // Como o array diminuiu, o próximo slide naturalmente ocupará o `previewIndex` atual.
+        // Só precisamos voltar 1 se o slide excluído era o último da lista.
+        if (previewIndex >= items.length) {
+          setPreviewIndex(items.length - 1);
+        }
+      } else if (previewIndex > result.source.index) {
+        // Se o excluído estava ANTES do preview, desloca o índice pra acompanhar o slide
+        setPreviewIndex(previewIndex - 1);
+      }
+      return;
+    }
 
     const items = Array.from(data);
     const [reorderedItem] = items.splice(result.source.index, 1);
@@ -79,7 +100,7 @@ export default function Configurator({
 
     setData(items);
 
-    // Update preview index if the dragged item was the one being previewed
+    // Update preview index se foi apenas movido
     if (previewIndex === result.source.index) {
       setPreviewIndex(result.destination.index);
     } else if (
@@ -313,6 +334,17 @@ export default function Configurator({
                             <div
                               ref={provided.innerRef}
                               {...provided.draggableProps}
+                              style={{
+                                ...provided.draggableProps.style,
+                                // Esconde a animação de "fantasma" quando o card é dropado fora (excluído)
+                                ...(snapshot.isDropAnimating && !snapshot.draggingOver
+                                  ? {
+                                      transitionDuration: '0.001s',
+                                      opacity: 0,
+                                      visibility: 'hidden',
+                                    }
+                                  : {}),
+                              }}
                               className={`flex items-center p-2 rounded-lg border transition-colors ${
                                 snapshot.isDragging
                                   ? 'bg-slate-800 border-cyan-500/50 shadow-lg'

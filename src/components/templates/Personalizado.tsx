@@ -28,6 +28,7 @@ export default function Personalizado({
   canvasScale = 1,
 }: PersonalizadoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const itemToDelete = useRef<string | null>(null);
   const tituloConfigurado = limitar(titleFontSize, 8, 40);
   const textoConfigurado = limitar(contentFontSize, 8, 40);
   const tamanhoTituloPrincipal = Math.max(24, tituloConfigurado * 1.6 * 1.1);
@@ -35,8 +36,16 @@ export default function Personalizado({
 
   function handleLayoutChange(currentLayout: any) {
     if (onLayoutChange && isEditable) {
+      let finalLayout = currentLayout;
+
+      // Intercepta o layout antes de salvar para remover o item agendado para deleção
+      if (itemToDelete.current) {
+        finalLayout = currentLayout.filter((item: any) => item.i !== itemToDelete.current);
+        itemToDelete.current = null; // Limpa após aplicar
+      }
+
       onLayoutChange(
-        currentLayout.map((item: any) => ({
+        finalLayout.map((item: any) => ({
           i: item.i,
           x: item.x,
           y: item.y,
@@ -47,26 +56,29 @@ export default function Personalizado({
     }
   }
 
-  function handleDragStop(currentLayout: any, oldItem: any, newItem: any, placeholder: any, e: MouseEvent | TouchEvent) {
+  function handleDragStop(currentLayout: any, oldItem: any, newItem: any, placeholder: any, e: any) {
     if (!isEditable || !onLayoutChange || !containerRef.current) return;
 
     const rect = containerRef.current.getBoundingClientRect();
     
+    const event = e.nativeEvent || e;
     let clientX = 0;
     let clientY = 0;
 
-    if ('changedTouches' in e && e.changedTouches.length > 0) {
-      clientX = e.changedTouches[0].clientX;
-      clientY = e.changedTouches[0].clientY;
-    } else if ('clientX' in e) {
-      clientX = (e as MouseEvent).clientX;
-      clientY = (e as MouseEvent).clientY;
+    if (event.changedTouches && event.changedTouches.length > 0) {
+      clientX = event.changedTouches[0].clientX;
+      clientY = event.changedTouches[0].clientY;
+    } else if (event.clientX !== undefined) {
+      clientX = event.clientX;
+      clientY = event.clientY;
+    } else if (event.pageX !== undefined) {
+      clientX = event.pageX - window.scrollX;
+      clientY = event.pageY - window.scrollY;
     } else {
       return;
     }
 
-    // Margem de tolerância externa para exclusão (px)
-    const margin = 30;
+    const margin = 20; // Margem para detectar que o mouse saiu da área
     const isOutside = 
       clientX < rect.left - margin || 
       clientX > rect.right + margin || 
@@ -74,8 +86,22 @@ export default function Personalizado({
       clientY > rect.bottom + margin;
 
     if (isOutside) {
-      const newLayoutState = layout.filter(item => item.i !== newItem.i);
-      onLayoutChange(newLayoutState);
+      // Marca o item para ser removido na próxima atualização de layout do react-grid-layout
+      itemToDelete.current = newItem.i;
+      
+      // Fallback: se o react-grid-layout não disparar onLayoutChange (ex: não houve movimento em pixels de grid),
+      // forçamos a exclusão manualmente.
+      setTimeout(() => {
+        if (itemToDelete.current === newItem.i) {
+          const fallbackLayout = currentLayout
+            .filter((item: any) => item.i !== newItem.i)
+            .map((item: any) => ({
+              i: item.i, x: item.x, y: item.y, w: item.w, h: item.h,
+            }));
+          onLayoutChange(fallbackLayout);
+          itemToDelete.current = null;
+        }
+      }, 50);
     }
   }
 
